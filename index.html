@@ -47,11 +47,6 @@
     .text-glow { text-shadow: 0 0 40px rgba(180,215,255,0.35), 0 0 90px rgba(120,180,255,0.18); }
     .button-glow { box-shadow: 0 0 22px rgba(255,255,255,0.25), 0 0 46px rgba(255,255,255,0.08); }
 
-    /* Starfield (manifesto) */
-    .stars-layer { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
-    .star { position: absolute; border-radius: 50%; background: #fff; animation: twinkle var(--dur, 4s) ease-in-out infinite alternate; }
-    @keyframes twinkle { from { opacity: .12; } to { opacity: 1; } }
-
     /* Hero image + Ken Burns */
     #heroImg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; animation: kenburns 26s ease-in-out infinite alternate; transform-origin:center; }
     @keyframes kenburns { from { transform: scale(1.05); } to { transform: scale(1.16) translate(-1.5%, 1%); } }
@@ -71,19 +66,6 @@
     @keyframes auroraDrift {
       0% { transform: translate(-6%,-4%) scale(1.05) rotate(-2deg); }
       100% { transform: translate(8%,3%) scale(1.18) rotate(3deg); }
-    }
-
-    /* ===== NEON reveal (founder quote) ===== */
-    .neon { color: rgba(210,232,255,0.22); transition: color .8s ease; }
-    .neon.lit {
-      color: #eaf4ff;
-      text-shadow: 0 0 7px rgba(120,190,255,.9), 0 0 18px rgba(77,163,255,.85), 0 0 40px rgba(47,127,214,.7), 0 0 80px rgba(47,127,214,.5);
-      animation: neonFlicker 1.7s both;
-    }
-    @keyframes neonFlicker {
-      0%,18%,22%,25%,53%,57% { color: rgba(210,232,255,0.25); text-shadow:none; }
-      20%,24%,30%,55%,100% { color:#eaf4ff; text-shadow: 0 0 7px rgba(120,190,255,.9), 0 0 18px rgba(77,163,255,.85), 0 0 40px rgba(47,127,214,.7), 0 0 80px rgba(47,127,214,.5); }
-      60% { color:#cfe6ff; text-shadow: 0 0 6px rgba(120,190,255,.7); }
     }
 
     /* Buttons */
@@ -116,6 +98,19 @@
     .dotrow { display:grid; grid-template-columns:repeat(20,1fr); gap:3px; }
     .dotrow > i { height:6px; border-radius:2px; background:rgba(124,198,255,.85); display:block; }
     .dotrow > i.off { background:rgba(255,255,255,.12); }
+
+
+    /* ===== TIMELINE (structure aceternity) ===== */
+    #timelineLine {
+      position:absolute; left:2rem; top:0; width:2px; overflow:hidden;
+      background:linear-gradient(to bottom, transparent 0%, rgba(255,255,255,.16) 12%, rgba(255,255,255,.16) 88%, transparent 99%);
+      -webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%);
+      mask-image:linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%);
+    }
+    #timelineBeam {
+      position:absolute; left:0; top:0; width:2px; height:0; border-radius:9999px; opacity:0;
+      background:linear-gradient(to top, #8b5cf6 0%, #38bdf8 10%, rgba(56,189,248,0) 100%);
+    }
 
     /* logo wordmark */
     .logo { font-family:'Orbitron',sans-serif; font-weight:800; letter-spacing:.22em; text-transform:uppercase; }
@@ -206,18 +201,22 @@
     </div>
   </header>
 
-  <!-- ============ MANIFESTO / NEON QUOTE ============ -->
-  <section id="manifesto" class="relative min-h-screen w-full overflow-hidden flex items-center justify-center bg-ink py-24">
-    <div class="stars-layer" id="mstars"></div>
-    <!-- subtle blue floor glow -->
-    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90vw] h-[40vh] rounded-full" style="background:radial-gradient(ellipse at 50% 100%, rgba(47,127,214,.28), transparent 70%); filter:blur(40px);"></div>
-
-    <div class="relative z-10 max-w-4xl px-8 text-center">
-      <p class="uppercase tracking-[0.4em] text-[11px] text-sky-300/70 mb-8 font-body font-semibold">Le manifeste</p>
-      <p id="founderQuote" class="neon font-display text-lg sm:text-xl md:text-3xl lg:text-[36px] leading-[1.5] md:leading-[1.55] font-medium">
-        « Nous avons imaginé Vélocity pour ceux qui ont déjà tout vu — sauf la Terre depuis le silence. Chaque suite est une fenêtre sur la planète, chaque nuit un privilège que seuls quelques centaines d'humains ont connu. Ici, le luxe n'est pas l'excès : c'est la perspective. »
+  <!-- ============ FINAL CTA / WAITLIST — HYPERSPACE ============ -->
+  <section id="waitlist" class="relative py-24 md:py-32 px-6 overflow-hidden">
+    <canvas id="hyperCanvas" class="absolute inset-0 w-full h-full -z-10"></canvas>
+    <div class="absolute inset-0 -z-10" style="background:radial-gradient(ellipse at 50% 45%, rgba(5,7,13,.35) 20%, rgba(5,7,13,.85) 70%, #05070d 100%);"></div>
+    <div class="reveal max-w-2xl mx-auto text-center">
+      <p class="uppercase tracking-[0.3em] text-[11px] text-white/60 mb-5 font-body font-semibold">Places limitées · Départs 2027</p>
+      <h2 class="font-display text-3xl md:text-5xl leading-tight font-semibold">Réservez votre place dans le ciel.</h2>
+      <p class="text-white/70 mt-6 text-lg md:text-xl font-body">
+        Les premiers séjours sont réservés aux membres de la liste d'attente. Laissez votre email : nous vous contactons dès l'ouverture des réservations.
       </p>
-      <p class="mt-9 text-white/70 text-base md:text-lg tracking-wide font-body">Elara Voss — Fondatrice & Directrice de l'expérience</p>
+      <form id="waitlistForm" class="mt-10 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+        <input type="email" required placeholder="votre@email.com" class="flex-1 liquid-glass rounded-full px-6 py-4 text-base text-white placeholder-white/40 outline-none focus:border-white/30 font-body" />
+        <button type="submit" class="btn-white button-glow whitespace-nowrap">Rejoindre</button>
+      </form>
+      <p id="formMsg" class="text-sky-300 text-base mt-4 h-5 transition-opacity opacity-0 font-body">Merci ! Vous êtes sur la liste — à très bientôt en orbite. ✦</p>
+      <p class="text-white/35 text-sm mt-6 font-body">Démonstration académique — aucune donnée n'est réellement collectée ni transmise.</p>
     </div>
   </section>
 
@@ -386,17 +385,84 @@
     </div>
   </section>
 
-  <!-- ============ HOW IT WORKS ============ -->
-  <section id="how" class="relative py-20 md:py-28 px-6 md:px-12 max-w-5xl mx-auto">
-    <div class="reveal text-center max-w-2xl mx-auto mb-16">
+  <!-- ============ LE VOYAGE — TIMELINE (structure aceternity) ============ -->
+  <section id="how" class="relative w-full md:px-10">
+    <div class="max-w-6xl mx-auto pt-20 pb-4 px-4 md:px-8 lg:px-10">
       <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5 font-body font-semibold">Le voyage</p>
-      <h2 class="font-display text-3xl md:text-4xl font-semibold">De la réservation à l'orbite</h2>
+      <h2 class="font-display text-3xl md:text-4xl font-semibold max-w-3xl">De la réservation à l'orbite</h2>
+      <p class="text-white/55 text-base md:text-lg mt-4 max-w-md font-body">Quatre étapes entre votre premier message et votre première nuit au-dessus du monde.</p>
     </div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="reveal"><div class="text-sky-300 text-sm font-semibold mb-3 font-body uppercase tracking-widest">Étape 01</div><h3 class="font-display text-lg mb-2 font-semibold">Réservation</h3><p class="text-white/55 text-base font-body">Vous rejoignez la liste, nous fixons ensemble vos dates de départ et votre suite.</p></div>
-      <div class="reveal"><div class="text-sky-300 text-sm font-semibold mb-3 font-body uppercase tracking-widest">Étape 02</div><h3 class="font-display text-lg mb-2 font-semibold">Préparation</h3><p class="text-white/55 text-base font-body">5 jours de formation en centre spatial : santé, apesanteur, sécurité. Tout est pris en charge.</p></div>
-      <div class="reveal"><div class="text-sky-300 text-sm font-semibold mb-3 font-body uppercase tracking-widest">Étape 03</div><h3 class="font-display text-lg mb-2 font-semibold">Départ</h3><p class="text-white/55 text-base font-body">Décollage et arrimage à Vélocity en quelques heures. Bienvenue à bord.</p></div>
-      <div class="reveal"><div class="text-sky-300 text-sm font-semibold mb-3 font-body uppercase tracking-widest">Étape 04</div><h3 class="font-display text-lg mb-2 font-semibold">Votre séjour</h3><p class="text-white/55 text-base font-body">3 à 12 nuits au-dessus du monde, puis un retour en douceur — transformé.</p></div>
+
+    <div id="timelineTrack" class="relative max-w-6xl mx-auto pb-20">
+      <div class="flex justify-start pt-10 md:pt-40 md:gap-10">
+        <div class="sticky flex flex-col md:flex-row z-40 items-center top-40 self-start max-w-xs lg:max-w-sm md:w-full">
+          <div class="h-10 absolute left-3 w-10 rounded-full bg-ink flex items-center justify-center">
+            <div class="h-4 w-4 rounded-full bg-white/10 border border-white/25"></div>
+          </div>
+          <h3 class="hidden md:block text-xl md:pl-20 md:text-4xl lg:text-5xl font-bold font-display text-white/25">Étape 01</h3>
+        </div>
+        <div class="relative pl-20 pr-4 md:pl-4 w-full">
+          <h3 class="md:hidden block text-2xl mb-3 text-left font-bold font-display text-white/25">Étape 01</h3>
+          <h4 class="font-display text-xl md:text-2xl font-semibold mb-3">Réservation</h4>
+          <p class="text-white/60 text-base md:text-lg font-body mb-7 max-w-xl">Vous rejoignez la liste d'attente. Nous fixons ensemble vos dates de départ, votre suite et le format de votre séjour — de 3 à 12 nuits.</p>
+          <div class="grid grid-cols-2 gap-3 md:gap-4">
+            <img src="assets/suite-cupola.jpg" alt="La suite Cupola" loading="lazy" class="rounded-xl object-cover h-28 md:h-44 lg:h-56 w-full border border-white/10" />
+            <img src="assets/suite-zenith.jpg" alt="La suite Zenith" loading="lazy" class="rounded-xl object-cover h-28 md:h-44 lg:h-56 w-full border border-white/10" />
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-start pt-10 md:pt-40 md:gap-10">
+        <div class="sticky flex flex-col md:flex-row z-40 items-center top-40 self-start max-w-xs lg:max-w-sm md:w-full">
+          <div class="h-10 absolute left-3 w-10 rounded-full bg-ink flex items-center justify-center">
+            <div class="h-4 w-4 rounded-full bg-white/10 border border-white/25"></div>
+          </div>
+          <h3 class="hidden md:block text-xl md:pl-20 md:text-4xl lg:text-5xl font-bold font-display text-white/25">Étape 02</h3>
+        </div>
+        <div class="relative pl-20 pr-4 md:pl-4 w-full">
+          <h3 class="md:hidden block text-2xl mb-3 text-left font-bold font-display text-white/25">Étape 02</h3>
+          <h4 class="font-display text-xl md:text-2xl font-semibold mb-3">Préparation</h4>
+          <p class="text-white/60 text-base md:text-lg font-body mb-7 max-w-xl">Cinq jours de formation en centre spatial : bilan médical, accoutumance à l'apesanteur, procédures de sécurité. Tout est pris en charge, aucune expérience requise.</p>
+          <div class="grid grid-cols-2 gap-3 md:gap-4">
+            <img src="assets/corridor-blue.jpg" alt="Centre d'entraînement" loading="lazy" class="rounded-xl object-cover h-28 md:h-44 lg:h-56 w-full border border-white/10" />
+            <img src="assets/station-arch.jpg" alt="La station Vélocity" loading="lazy" class="rounded-xl object-cover h-28 md:h-44 lg:h-56 w-full border border-white/10" />
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-start pt-10 md:pt-40 md:gap-10">
+        <div class="sticky flex flex-col md:flex-row z-40 items-center top-40 self-start max-w-xs lg:max-w-sm md:w-full">
+          <div class="h-10 absolute left-3 w-10 rounded-full bg-ink flex items-center justify-center">
+            <div class="h-4 w-4 rounded-full bg-white/10 border border-white/25"></div>
+          </div>
+          <h3 class="hidden md:block text-xl md:pl-20 md:text-4xl lg:text-5xl font-bold font-display text-white/25">Étape 03</h3>
+        </div>
+        <div class="relative pl-20 pr-4 md:pl-4 w-full">
+          <h3 class="md:hidden block text-2xl mb-3 text-left font-bold font-display text-white/25">Étape 03</h3>
+          <h4 class="font-display text-xl md:text-2xl font-semibold mb-3">Départ</h4>
+          <p class="text-white/60 text-base md:text-lg font-body mb-7 max-w-xl">Décollage, puis arrimage à Vélocity en quelques heures seulement. Les portes s'ouvrent : vous êtes à 400 kilomètres d'altitude.</p>
+          <div class="grid grid-cols-2 gap-3 md:gap-4">
+            <img src="assets/hero.jpg" alt="Départ vers l'orbite" loading="lazy" class="rounded-xl object-cover h-28 md:h-44 lg:h-56 w-full border border-white/10" />
+            <img src="assets/earth-night.jpg" alt="La Terre de nuit" loading="lazy" class="rounded-xl object-cover h-28 md:h-44 lg:h-56 w-full border border-white/10" />
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-start pt-10 md:pt-40 md:gap-10">
+        <div class="sticky flex flex-col md:flex-row z-40 items-center top-40 self-start max-w-xs lg:max-w-sm md:w-full">
+          <div class="h-10 absolute left-3 w-10 rounded-full bg-ink flex items-center justify-center">
+            <div class="h-4 w-4 rounded-full bg-white/10 border border-white/25"></div>
+          </div>
+          <h3 class="hidden md:block text-xl md:pl-20 md:text-4xl lg:text-5xl font-bold font-display text-white/25">Étape 04</h3>
+        </div>
+        <div class="relative pl-20 pr-4 md:pl-4 w-full">
+          <h3 class="md:hidden block text-2xl mb-3 text-left font-bold font-display text-white/25">Étape 04</h3>
+          <h4 class="font-display text-xl md:text-2xl font-semibold mb-3">Votre séjour</h4>
+          <p class="text-white/60 text-base md:text-lg font-body mb-7 max-w-xl">Seize levers de soleil par jour, un spa en apesanteur, une table signée par un chef étoilé. Puis un retour en douceur — transformé.</p>
+          <div class="grid grid-cols-2 gap-3 md:gap-4">
+            <img src="assets/cupola-view.jpg" alt="Vue depuis la coupole" loading="lazy" class="rounded-xl object-cover h-28 md:h-44 lg:h-56 w-full border border-white/10" />
+            <img src="assets/suite-zenith-lounge.jpg" alt="Salon privatif" loading="lazy" class="rounded-xl object-cover h-28 md:h-44 lg:h-56 w-full border border-white/10" />
+          </div>
+        </div>
+      </div>
+      <div id="timelineLine"><div id="timelineBeam"></div></div>
     </div>
   </section>
 
@@ -420,25 +486,6 @@
         <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90 text-lg font-body font-medium">Rejoindre la liste m'engage-t-il ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
         <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-base font-body"><p class="pb-5">Aucun engagement. La liste d'attente vous donne un accès prioritaire aux premiers départs 2027 et à nos annonces. Vous restez libre à chaque étape.</p></div>
       </div>
-    </div>
-  </section>
-
-  <!-- ============ FINAL CTA / WAITLIST — HYPERSPACE ============ -->
-  <section id="waitlist" class="relative py-24 md:py-32 px-6 overflow-hidden">
-    <canvas id="hyperCanvas" class="absolute inset-0 w-full h-full -z-10"></canvas>
-    <div class="absolute inset-0 -z-10" style="background:radial-gradient(ellipse at 50% 45%, rgba(5,7,13,.35) 20%, rgba(5,7,13,.85) 70%, #05070d 100%);"></div>
-    <div class="reveal max-w-2xl mx-auto text-center">
-      <p class="uppercase tracking-[0.3em] text-[11px] text-white/60 mb-5 font-body font-semibold">Places limitées · Départs 2027</p>
-      <h2 class="font-display text-3xl md:text-5xl leading-tight font-semibold">Réservez votre place dans le ciel.</h2>
-      <p class="text-white/70 mt-6 text-lg md:text-xl font-body">
-        Les premiers séjours sont réservés aux membres de la liste d'attente. Laissez votre email : nous vous contactons dès l'ouverture des réservations.
-      </p>
-      <form id="waitlistForm" class="mt-10 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-        <input type="email" required placeholder="votre@email.com" class="flex-1 liquid-glass rounded-full px-6 py-4 text-base text-white placeholder-white/40 outline-none focus:border-white/30 font-body" />
-        <button type="submit" class="btn-white button-glow whitespace-nowrap">Rejoindre</button>
-      </form>
-      <p id="formMsg" class="text-sky-300 text-base mt-4 h-5 transition-opacity opacity-0 font-body">Merci ! Vous êtes sur la liste — à très bientôt en orbite. ✦</p>
-      <p class="text-white/35 text-sm mt-6 font-body">Démonstration académique — aucune donnée n'est réellement collectée ni transmise.</p>
     </div>
   </section>
 
@@ -505,16 +552,6 @@
   <script>
     lucide.createIcons();
 
-    // Starfield (manifesto)
-    (function(){
-      const c=document.getElementById('mstars'); if(!c) return; const frag=document.createDocumentFragment();
-      for(let i=0;i<120;i++){const s=document.createElement('div');s.className='star';
-        const size=Math.random()*1.8+0.4; s.style.width=size+'px'; s.style.height=size+'px';
-        s.style.left=Math.random()*100+'%'; s.style.top=Math.random()*100+'%';
-        s.style.setProperty('--dur',(Math.random()*4+2)+'s'); s.style.animationDelay=Math.random()*4+'s'; frag.appendChild(s);}
-      c.appendChild(frag);
-    })();
-
     // Countdown
     (function(){
       const target=new Date('2027-04-12T13:00:00Z').getTime();
@@ -537,18 +574,16 @@
     // Reveal + neon + nav backdrop (scroll-check, robust)
     const revealEls=[...document.querySelectorAll('.reveal')];
     const nav=document.getElementById('nav');
-    const quote=document.getElementById('founderQuote');
     function onScroll(){
       const vh=window.innerHeight||document.documentElement.clientHeight;
       revealEls.forEach(el=>{if(el.getBoundingClientRect().top < vh*0.9) el.classList.add('in');});
-      if(quote && quote.getBoundingClientRect().top < vh*0.72) quote.classList.add('lit');
       nav.classList.toggle('scrolled',window.scrollY>40);
     }
     window.addEventListener('scroll',onScroll,{passive:true});
     window.addEventListener('resize',onScroll);
     window.addEventListener('load',onScroll);
     onScroll();
-    setTimeout(()=>{revealEls.forEach(el=>el.classList.add('in')); if(quote) quote.classList.add('lit');},3500);
+    setTimeout(()=>revealEls.forEach(el=>el.classList.add('in')),3500);
 
     // FAQ accordion
     document.querySelectorAll('.faq-q').forEach(btn=>{
@@ -563,6 +598,31 @@
 
     // Waitlist (demo only)
     document.getElementById('waitlistForm').addEventListener('submit',e=>{e.preventDefault();document.getElementById('formMsg').style.opacity='1';e.target.reset();});
+
+
+    // ===== TIMELINE beam (scroll progress, cf. aceternity) =====
+    (function(){
+      const track=document.getElementById('timelineTrack');
+      const line=document.getElementById('timelineLine');
+      const beam=document.getElementById('timelineBeam');
+      if(!track||!line||!beam) return;
+      function update(){
+        const H=track.offsetHeight;
+        line.style.height=H+'px';
+        const vh=window.innerHeight||document.documentElement.clientHeight;
+        const rect=track.getBoundingClientRect();
+        // équivalent de l'offset framer-motion ["start 10%", "end 50%"]
+        const denom=Math.max(1, H - vh*0.4);
+        let p=(vh*0.1 - rect.top)/denom;
+        p=Math.min(1,Math.max(0,p));
+        beam.style.height=(p*H)+'px';
+        beam.style.opacity=String(Math.min(1,p/0.1));
+      }
+      window.addEventListener('scroll',update,{passive:true});
+      window.addEventListener('resize',update);
+      window.addEventListener('load',update);
+      update();
+    })();
 
     // ===== HYPERSPACE / LIGHTSPEED (canvas warp) =====
     (function(){

@@ -1,8 +1,8 @@
-# Cosmos Vela — Le premier hôtel en orbite 🛰️
+# Vélocity — Le premier hôtel en orbite 🛰️
 
 Landing page réalisée dans le cadre du **Challenge No-Code (semaine 1)** — EM Normandie, M2 ALT *Digital Innovation & Transformation*.
 
-**Cosmos Vela** est un concept fictif : le premier hôtel de luxe en orbite terrestre basse. La page présente la proposition de valeur, les suites, l'expérience à bord et invite les visiteurs à rejoindre la liste d'attente (CTA).
+**Vélocity** est un concept fictif : le premier hôtel de luxe en orbite terrestre basse. La page présente la proposition de valeur, les suites, l'expérience à bord et invite les visiteurs à rejoindre la liste d'attente (CTA).
 
 **Site en ligne :** https://pulsixtech.github.io/aurelia-orbital-hotel/
 
@@ -15,8 +15,8 @@ Landing page réalisée dans le cadre du **Challenge No-Code (semaine 1)** — E
 ## Stack technique
 - Fichier unique `index.html`
 - [Tailwind CSS](https://tailwindcss.com/) via CDN + [Lucide Icons](https://lucide.dev/)
-- [Three.js](https://threejs.org/) (CDN) pour la Terre 3D (globe avec shader jour/nuit, atmosphère et nuages)
-- Google Fonts : Instrument Serif, Dancing Script, Inter
+- Google Fonts : **Orbitron** (titres/logo) + **Rajdhani** (texte) — direction futuriste
+- Effets maison (CSS/Canvas, inspirés de ReactBits, recodés en vanilla) : **aurore boréale** (hero), **néon** (citation fondatrice), **hyperespace / lightspeed** (CTA final)
 
 ## Équipe
 Théo GILLARD · Eliot BOYER · Anis BENKHEROUF
@@ -25,8 +25,8 @@ Théo GILLARD · Eliot BOYER · Anis BENKHEROUF
 Landing page conçue avec l'aide de l'IA générative **Claude (Anthropic)** pour le design et le code. Les contenus ont été vérifiés et retravaillés par l'équipe.
 
 ## Sources & licences des ressources externes
-- **Textures de la Terre** (`assets/earth_day.jpg`, `earth_night.jpg`, `earth_clouds.jpg`) : [Solar System Scope](https://www.solarsystemscope.com/textures/) — licence **CC BY 4.0**.
-- **Photographies d'illustration** (`assets/hotel-station.jpg`, `cupola-view.jpg`, `earth-night.jpg`, `corridor.jpg`) : [Unsplash](https://unsplash.com/) — licence Unsplash (usage libre).
+- **Photographies d'illustration** (`assets/hero.jpg`, `station-arch.jpg`, `cupola-view.jpg`, `corridor.jpg`, `earth-night.jpg`) : [Unsplash](https://unsplash.com/) — licence Unsplash (usage libre).
+- (Les fichiers `assets/earth_*.jpg` — textures Solar System Scope, CC BY 4.0 — servaient au globe 3D d'une version précédente et ne sont plus utilisés.)
 
 ---
 « No Code is the New Future »

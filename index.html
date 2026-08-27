@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cosmos Vela — Le premier hôtel en orbite</title>
-  <meta name="description" content="Cosmos Vela, le premier hôtel de luxe en orbite basse. Suites panoramiques, 16 levers de soleil par jour, spa en apesanteur. Rejoignez la liste d'attente." />
+  <title>Vélocity — Le premier hôtel en orbite</title>
+  <meta name="description" content="Vélocity, le premier hôtel de luxe en orbite basse. Suites panoramiques, 16 levers de soleil par jour, spa en apesanteur. Rejoignez la liste d'attente." />
 
-  <!-- Google Fonts -->
+  <!-- Google Fonts : futuristes -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Tailwind CSS (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -17,9 +17,10 @@
     tailwind.config = {
       theme: { extend: {
         fontFamily: {
-          inter: ['Inter', 'sans-serif'],
-          instrument: ['Instrument Serif', 'serif'],
-          dancing: ['Dancing Script', 'cursive'],
+          display: ['Orbitron', 'sans-serif'],
+          body: ['Rajdhani', 'sans-serif'],
+          instrument: ['Orbitron', 'sans-serif'],
+          dancing: ['Orbitron', 'sans-serif'],
         },
         colors: { ink: '#05070d' },
       } },
@@ -29,17 +30,13 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
-  <!-- Three.js (for the 3D Earth) -->
-  <script type="importmap">
-    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
-  </script>
-
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; background: #05070d; color: #fff; overflow-x: hidden; }
-    .font-instrument { font-family: 'Instrument Serif', serif; }
-    .font-dancing { font-family: 'Dancing Script', cursive; }
+    body { font-family: 'Rajdhani', sans-serif; background: #05070d; color: #fff; overflow-x: hidden; font-weight: 400; }
+    .font-instrument, .font-display { font-family: 'Orbitron', sans-serif; letter-spacing: -0.01em; }
+    .font-dancing { font-family: 'Orbitron', sans-serif; }
+    .font-body { font-family: 'Rajdhani', sans-serif; }
 
     .liquid-glass {
       background: rgba(255,255,255,0.02);
@@ -50,25 +47,49 @@
     .text-glow { text-shadow: 0 0 40px rgba(180,215,255,0.35), 0 0 90px rgba(120,180,255,0.18); }
     .button-glow { box-shadow: 0 0 22px rgba(255,255,255,0.25), 0 0 46px rgba(255,255,255,0.08); }
 
-    /* Starfield */
-    #stars, #stars2 { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+    /* Starfield (manifesto) */
+    .stars-layer { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
     .star { position: absolute; border-radius: 50%; background: #fff; animation: twinkle var(--dur, 4s) ease-in-out infinite alternate; }
     @keyframes twinkle { from { opacity: .12; } to { opacity: 1; } }
 
-    /* 3D Earth canvas */
-    #earthCanvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; display: block; }
-    /* CSS fallback glow behind the canvas (visible if WebGL fails) */
-    #earthFallback {
-      position:absolute; left:50%; bottom:-135vw; transform:translateX(-50%);
-      width:200vw; height:200vw; border-radius:50%; z-index:0;
-      background:radial-gradient(circle at 50% 18%, #2b6fb5 0%, #124077 30%, #0a2550 50%, #05132e 68%, #04102a 100%);
-      box-shadow: inset 0 0 120px 20px rgba(120,190,255,.35), 0 0 120px 30px rgba(90,160,255,.25);
+    /* Hero image + Ken Burns */
+    #heroImg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; animation: kenburns 26s ease-in-out infinite alternate; transform-origin:center; }
+    @keyframes kenburns { from { transform: scale(1.05); } to { transform: scale(1.16) translate(-1.5%, 1%); } }
+
+    /* ===== AURORA effect ===== */
+    .aurora { position:absolute; left:0; right:0; top:0; height:62%; z-index:2; pointer-events:none; overflow:hidden; opacity:.9; }
+    .aurora::before, .aurora::after {
+      content:''; position:absolute; left:-25%; right:-25%; top:-45%; height:150%;
+      background:
+        radial-gradient(38% 55% at 18% 42%, rgba(46,230,170,.55), transparent 70%),
+        radial-gradient(42% 52% at 50% 30%, rgba(56,189,248,.50), transparent 70%),
+        radial-gradient(40% 58% at 82% 46%, rgba(139,92,246,.50), transparent 70%);
+      filter: blur(64px); mix-blend-mode: screen;
+      animation: auroraDrift 17s ease-in-out infinite alternate;
+    }
+    .aurora::after { animation-duration: 23s; animation-direction: alternate-reverse; opacity:.65; }
+    @keyframes auroraDrift {
+      0% { transform: translate(-6%,-4%) scale(1.05) rotate(-2deg); }
+      100% { transform: translate(8%,3%) scale(1.18) rotate(3deg); }
+    }
+
+    /* ===== NEON reveal (founder quote) ===== */
+    .neon { color: rgba(210,232,255,0.22); transition: color .8s ease; }
+    .neon.lit {
+      color: #eaf4ff;
+      text-shadow: 0 0 7px rgba(120,190,255,.9), 0 0 18px rgba(77,163,255,.85), 0 0 40px rgba(47,127,214,.7), 0 0 80px rgba(47,127,214,.5);
+      animation: neonFlicker 1.7s both;
+    }
+    @keyframes neonFlicker {
+      0%,18%,22%,25%,53%,57% { color: rgba(210,232,255,0.25); text-shadow:none; }
+      20%,24%,30%,55%,100% { color:#eaf4ff; text-shadow: 0 0 7px rgba(120,190,255,.9), 0 0 18px rgba(77,163,255,.85), 0 0 40px rgba(47,127,214,.7), 0 0 80px rgba(47,127,214,.5); }
+      60% { color:#cfe6ff; text-shadow: 0 0 6px rgba(120,190,255,.7); }
     }
 
     /* Buttons */
-    .btn-white { background:#fff; color:#000; border-radius:9999px; font-weight:500; font-size:.875rem; letter-spacing:.02em; padding:.9rem 2rem; transition:all .3s ease; }
+    .btn-white { background:#fff; color:#000; border-radius:9999px; font-weight:600; font-size:.95rem; letter-spacing:.08em; text-transform:uppercase; padding:.85rem 2rem; transition:all .3s ease; }
     .btn-white:hover { background: rgba(255,255,255,.9); transform: translateY(-1px); }
-    .btn-ghost { color:#fff; border:1px solid rgba(255,255,255,.25); border-radius:9999px; padding:.9rem 2rem; font-size:.875rem; font-weight:500; transition:all .3s ease; }
+    .btn-ghost { color:#fff; border:1px solid rgba(255,255,255,.25); border-radius:9999px; padding:.85rem 2rem; font-size:.95rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; transition:all .3s ease; }
     .btn-ghost:hover { background: rgba(255,255,255,.08); }
 
     .reveal { opacity:0; transform: translateY(28px); transition: opacity .9s ease, transform .9s cubic-bezier(.22,1,.36,1); }
@@ -85,6 +106,7 @@
 
     #nav { transition: background .4s ease, backdrop-filter .4s ease, border-color .4s ease; border-bottom:1px solid transparent; }
     #nav.scrolled { background: rgba(5,7,13,0.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom-color: rgba(255,255,255,0.06); }
+    .nav-link { text-transform:uppercase; letter-spacing:.12em; font-weight:500; }
 
     section[id], header[id] { scroll-margin-top: 84px; }
 
@@ -94,20 +116,23 @@
     .dotrow { display:grid; grid-template-columns:repeat(20,1fr); gap:3px; }
     .dotrow > i { height:6px; border-radius:2px; background:rgba(124,198,255,.85); display:block; }
     .dotrow > i.off { background:rgba(255,255,255,.12); }
+
+    /* logo wordmark */
+    .logo { font-family:'Orbitron',sans-serif; font-weight:800; letter-spacing:.22em; text-transform:uppercase; }
   </style>
 </head>
-<body class="font-inter bg-ink text-white antialiased">
+<body class="bg-ink text-white antialiased">
 
   <!-- ============ NAVBAR ============ -->
   <nav id="nav" class="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-5 flex items-center justify-between">
-    <a href="#hero" class="font-dancing text-white text-2xl md:text-3xl">Cosmos Vela</a>
+    <a href="#hero" class="logo text-white text-lg md:text-xl">Vélocity</a>
     <div class="hidden md:flex items-center gap-10 lg:gap-12">
-      <a href="#experience" class="text-white/75 hover:text-white text-sm tracking-wide transition">L'expérience</a>
-      <a href="#suites" class="text-white/75 hover:text-white text-sm tracking-wide transition">Les suites</a>
-      <a href="#board" class="text-white/75 hover:text-white text-sm tracking-wide transition">À bord</a>
-      <a href="#faq" class="text-white/75 hover:text-white text-sm tracking-wide transition">Infos</a>
+      <a href="#experience" class="nav-link text-white/75 hover:text-white text-xs transition">L'expérience</a>
+      <a href="#suites" class="nav-link text-white/75 hover:text-white text-xs transition">Les suites</a>
+      <a href="#board" class="nav-link text-white/75 hover:text-white text-xs transition">À bord</a>
+      <a href="#faq" class="nav-link text-white/75 hover:text-white text-xs transition">Infos</a>
     </div>
-    <a href="#waitlist" class="hidden md:inline-block btn-white button-glow">Rejoindre la liste</a>
+    <a href="#waitlist" class="hidden md:inline-block btn-white button-glow">Rejoindre</a>
     <button id="hamburger" class="hamburger md:hidden relative w-8 h-6 flex flex-col justify-between z-50" aria-label="Menu">
       <span class="block h-[2px] w-full bg-white rounded"></span>
       <span class="block h-[2px] w-full bg-white rounded"></span>
@@ -116,103 +141,99 @@
   </nav>
 
   <div id="mobileMenu" class="fixed top-0 right-0 h-full w-[85%] max-w-[340px] z-40 bg-[#05070d]/95 backdrop-blur-xl border-l border-white/10 flex flex-col justify-center px-9 gap-7">
-    <a href="#experience" class="menu-link text-white/85 text-2xl font-instrument">L'expérience</a>
-    <a href="#suites" class="menu-link text-white/85 text-2xl font-instrument">Les suites</a>
-    <a href="#board" class="menu-link text-white/85 text-2xl font-instrument">À bord</a>
-    <a href="#faq" class="menu-link text-white/85 text-2xl font-instrument">Infos</a>
-    <a href="#waitlist" class="menu-link btn-white text-center mt-4">Rejoindre la liste</a>
+    <a href="#experience" class="menu-link nav-link text-white/85 text-xl">L'expérience</a>
+    <a href="#suites" class="menu-link nav-link text-white/85 text-xl">Les suites</a>
+    <a href="#board" class="menu-link nav-link text-white/85 text-xl">À bord</a>
+    <a href="#faq" class="menu-link nav-link text-white/85 text-xl">Infos</a>
+    <a href="#waitlist" class="menu-link btn-white text-center mt-4">Rejoindre</a>
   </div>
 
   <!-- ============ HERO ============ -->
   <header id="hero" class="relative h-screen w-full overflow-hidden">
-    <div id="stars"></div>
-    <div id="stars2"></div>
-    <div id="earthFallback"></div>
-    <canvas id="earthCanvas"></canvas>
+    <img id="heroImg" src="assets/hero.jpg" alt="La station Vélocity et ses navettes au-dessus de la Terre" />
 
-    <!-- top vignette for legibility -->
-    <div class="absolute inset-0 z-10 pointer-events-none" style="background:linear-gradient(180deg, rgba(5,7,13,0.85) 0%, rgba(5,7,13,0.30) 24%, rgba(5,7,13,0) 46%);"></div>
+    <!-- aurora over the dark sky part -->
+    <div class="aurora"></div>
 
-    <div class="absolute inset-0 z-20 flex flex-col items-center justify-center px-6 -mt-24 md:-mt-28 text-center">
-      <p class="uppercase tracking-[0.35em] text-[11px] md:text-xs text-white/60 mb-6">Ouverture · Avril 2027</p>
-      <h1 class="font-instrument text-white text-[40px] leading-[0.95] md:text-7xl lg:text-[104px] tracking-tight text-glow max-w-5xl">
-        Passez la nuit<br class="hidden sm:block" /> <span class="italic">au-dessus du monde.</span>
+    <!-- legibility overlays -->
+    <div class="absolute inset-0 z-10 pointer-events-none" style="background:linear-gradient(180deg, rgba(5,7,13,0.80) 0%, rgba(5,7,13,0.30) 26%, rgba(5,7,13,0.15) 50%, rgba(5,7,13,0.55) 82%, rgba(5,7,13,0.92) 100%);"></div>
+    <div class="absolute inset-0 z-10 pointer-events-none" style="background:radial-gradient(ellipse at 50% 62%, rgba(5,7,13,0) 30%, rgba(5,7,13,0.35) 100%);"></div>
+
+    <div class="absolute inset-0 z-20 flex flex-col items-center justify-center px-6 -mt-16 md:-mt-20 text-center">
+      <p class="uppercase tracking-[0.4em] text-[11px] md:text-xs text-white/60 mb-6 font-body font-semibold">Ouverture · Avril 2027</p>
+      <h1 class="font-display font-semibold text-white text-[30px] leading-[1.05] md:text-6xl lg:text-[86px] tracking-tight text-glow max-w-5xl">
+        Passez la nuit<br class="hidden sm:block" /> au-dessus du monde.
       </h1>
-      <p class="text-white/70 text-sm md:text-lg mt-6 md:mt-8 max-w-xl">
-        Cosmos Vela est le premier hôtel de luxe en orbite. Des suites panoramiques à 400 km d'altitude, seize levers de soleil par jour, et un silence que la Terre ne connaît pas.
+      <p class="text-white/85 text-base md:text-xl mt-6 md:mt-8 max-w-xl font-body" style="text-shadow:0 2px 24px rgba(5,7,13,.85), 0 1px 4px rgba(5,7,13,.9);">
+        Vélocity est le premier hôtel de luxe en orbite. Des suites panoramiques à 400 km d'altitude, seize levers de soleil par jour, et un silence que la Terre ne connaît pas.
       </p>
       <div class="flex flex-col sm:flex-row items-center gap-4 mt-9">
-        <a href="#waitlist" class="btn-white button-glow">Rejoindre la liste d'attente</a>
-        <a href="#experience" class="btn-ghost">Découvrir l'expérience</a>
+        <a href="#waitlist" class="btn-white button-glow">Rejoindre la liste</a>
+        <a href="#experience" class="btn-ghost">Découvrir</a>
       </div>
     </div>
 
     <div class="absolute bottom-8 left-0 right-0 z-20 flex justify-center px-4">
       <div class="liquid-glass rounded-2xl px-5 py-3 md:px-8 md:py-4 flex items-center gap-4 md:gap-8">
-        <span class="text-[10px] md:text-xs uppercase tracking-[0.25em] text-white/55 hidden sm:block">T‑moins</span>
+        <span class="text-[10px] md:text-xs uppercase tracking-[0.25em] text-white/55 hidden sm:block font-body font-semibold">T‑moins</span>
         <div class="flex items-center gap-3 md:gap-6" id="countdown">
-          <div class="text-center"><div class="text-lg md:text-2xl font-instrument" data-cd="days">—</div><div class="text-[9px] md:text-[10px] uppercase tracking-widest text-white/45">jours</div></div>
-          <div class="text-center"><div class="text-lg md:text-2xl font-instrument" data-cd="hours">—</div><div class="text-[9px] md:text-[10px] uppercase tracking-widest text-white/45">heures</div></div>
-          <div class="text-center"><div class="text-lg md:text-2xl font-instrument" data-cd="mins">—</div><div class="text-[9px] md:text-[10px] uppercase tracking-widest text-white/45">min</div></div>
-          <div class="text-center"><div class="text-lg md:text-2xl font-instrument" data-cd="secs">—</div><div class="text-[9px] md:text-[10px] uppercase tracking-widest text-white/45">sec</div></div>
+          <div class="text-center"><div class="text-lg md:text-2xl font-display" data-cd="days">—</div><div class="text-[9px] md:text-[10px] uppercase tracking-widest text-white/45 font-body">jours</div></div>
+          <div class="text-center"><div class="text-lg md:text-2xl font-display" data-cd="hours">—</div><div class="text-[9px] md:text-[10px] uppercase tracking-widest text-white/45 font-body">heures</div></div>
+          <div class="text-center"><div class="text-lg md:text-2xl font-display" data-cd="mins">—</div><div class="text-[9px] md:text-[10px] uppercase tracking-widest text-white/45 font-body">min</div></div>
+          <div class="text-center"><div class="text-lg md:text-2xl font-display" data-cd="secs">—</div><div class="text-[9px] md:text-[10px] uppercase tracking-widest text-white/45 font-body">sec</div></div>
         </div>
-        <span class="text-[10px] md:text-xs text-white/55 hidden md:block">avant le premier départ</span>
+        <span class="text-[10px] md:text-xs text-white/55 hidden md:block font-body">avant le premier départ</span>
       </div>
     </div>
   </header>
 
-  <!-- ============ MANIFESTO / QUOTE ============ -->
-  <section id="manifesto" class="relative h-screen w-full overflow-hidden flex items-center justify-center"
-           style="background:linear-gradient(180deg,#010A17 0%,#0A2E4E 35%,#20658E 68%,#4d90b5 100%);">
-    <div class="parallax-cloud absolute left-[-10%] bottom-[8%] w-[420px] md:w-[620px] opacity-40 hidden sm:block" data-speed="0.06">
-      <div class="w-full aspect-[2/1] rounded-full" style="background:radial-gradient(circle,rgba(255,255,255,.55),transparent 62%);filter:blur(20px);"></div>
-    </div>
-    <div class="parallax-cloud absolute right-[-12%] bottom-[16%] w-[460px] md:w-[680px] opacity-40 hidden sm:block" data-speed="0.1">
-      <div class="w-full aspect-[2/1] rounded-full" style="background:radial-gradient(circle,rgba(255,255,255,.5),transparent 62%);filter:blur(22px);"></div>
-    </div>
-    <div class="absolute top-[-14%] left-1/2 -translate-x-1/2 w-[70vw] h-[40vw] rounded-full" style="background:radial-gradient(circle,rgba(255,220,170,.55),transparent 60%);filter:blur(30px);"></div>
+  <!-- ============ MANIFESTO / NEON QUOTE ============ -->
+  <section id="manifesto" class="relative min-h-screen w-full overflow-hidden flex items-center justify-center bg-ink py-24">
+    <div class="stars-layer" id="mstars"></div>
+    <!-- subtle blue floor glow -->
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90vw] h-[40vh] rounded-full" style="background:radial-gradient(ellipse at 50% 100%, rgba(47,127,214,.28), transparent 70%); filter:blur(40px);"></div>
 
     <div class="relative z-10 max-w-4xl px-8 text-center">
-      <p class="font-instrument text-white text-xl sm:text-2xl md:text-4xl lg:text-[42px] leading-[1.45] md:leading-[1.5]">
-        « Nous avons imaginé Cosmos Vela pour ceux qui ont déjà tout vu — sauf la Terre depuis le silence. Chaque suite est une fenêtre sur la planète, chaque nuit un privilège que seuls quelques centaines d'humains ont connu. Ici, le luxe n'est pas l'excès : c'est la perspective. »
+      <p class="uppercase tracking-[0.4em] text-[11px] text-sky-300/70 mb-8 font-body font-semibold">Le manifeste</p>
+      <p id="founderQuote" class="neon font-display text-lg sm:text-xl md:text-3xl lg:text-[36px] leading-[1.5] md:leading-[1.55] font-medium">
+        « Nous avons imaginé Vélocity pour ceux qui ont déjà tout vu — sauf la Terre depuis le silence. Chaque suite est une fenêtre sur la planète, chaque nuit un privilège que seuls quelques centaines d'humains ont connu. Ici, le luxe n'est pas l'excès : c'est la perspective. »
       </p>
-      <p class="mt-7 md:mt-9 text-white/85 text-sm md:text-base tracking-wide">Elara Voss — Fondatrice & Directrice de l'expérience</p>
+      <p class="mt-9 text-white/70 text-base md:text-lg tracking-wide font-body">Elara Voss — Fondatrice & Directrice de l'expérience</p>
     </div>
   </section>
 
   <!-- ============ EXPERIENCE ============ -->
   <section id="experience" class="relative py-24 md:py-36 px-6 md:px-12 max-w-6xl mx-auto">
     <div class="reveal text-center max-w-3xl mx-auto">
-      <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5">L'expérience Cosmos Vela</p>
-      <h2 class="font-instrument text-4xl md:text-6xl leading-tight">Un hôtel. <span class="italic text-white/70">Une orbite.</span> Aucune comparaison.</h2>
-      <p class="text-white/60 mt-6 md:text-lg leading-relaxed">
-        Amarrée à 400 kilomètres d'altitude, la station Cosmos Vela accueille 32 voyageurs pour des séjours de 3 à 12 nuits.
+      <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5 font-body font-semibold">L'expérience Vélocity</p>
+      <h2 class="font-display text-3xl md:text-5xl leading-tight font-semibold">Un hôtel. Une orbite. Aucune comparaison.</h2>
+      <p class="text-white/60 mt-6 text-lg md:text-xl leading-relaxed font-body">
+        Amarrée à 400 kilomètres d'altitude, la station Vélocity accueille 32 voyageurs pour des séjours de 3 à 12 nuits.
         Un vaisseau vous y conduit en quelques heures ; le reste appartient à l'apesanteur, aux baies vitrées panoramiques et à un service pensé au millimètre.
       </p>
     </div>
 
-    <!-- feature image band -->
     <div class="reveal mt-14 rounded-3xl overflow-hidden relative border border-white/10">
-      <img src="assets/hotel-station.jpg" alt="Vue de la station Cosmos Vela en orbite" class="w-full h-[280px] md:h-[440px] object-cover" loading="lazy" />
+      <img src="assets/station-arch.jpg" alt="La station Vélocity en orbite" class="w-full h-[280px] md:h-[440px] object-cover" loading="lazy" />
       <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(5,7,13,0) 40%,rgba(5,7,13,.85) 100%);"></div>
       <div class="absolute bottom-0 left-0 p-6 md:p-10">
-        <p class="text-white/60 text-xs uppercase tracking-[0.25em] mb-2">La station</p>
-        <h3 class="font-instrument text-2xl md:text-4xl">Une architecture pensée pour l'apesanteur</h3>
+        <p class="text-white/60 text-xs uppercase tracking-[0.25em] mb-2 font-body font-semibold">La station</p>
+        <h3 class="font-display text-xl md:text-3xl font-semibold">Une architecture pensée pour l'apesanteur</h3>
       </div>
     </div>
 
     <div class="grid md:grid-cols-3 gap-6 mt-12">
       <div class="reveal liquid-glass rounded-3xl p-8">
-        <div class="text-4xl font-instrument mb-2">400<span class="text-lg align-top">km</span></div>
-        <p class="text-white/55 text-sm">d'altitude, en orbite terrestre basse — l'endroit d'où la Terre paraît à la fois immense et fragile.</p>
+        <div class="text-4xl font-display font-bold mb-2">400<span class="text-lg align-top">km</span></div>
+        <p class="text-white/55 text-base font-body">d'altitude, en orbite terrestre basse — l'endroit d'où la Terre paraît à la fois immense et fragile.</p>
       </div>
       <div class="reveal liquid-glass rounded-3xl p-8">
-        <div class="text-4xl font-instrument mb-2">16</div>
-        <p class="text-white/55 text-sm">levers et couchers de soleil par période de 24 heures. L'aube, toutes les 90 minutes.</p>
+        <div class="text-4xl font-display font-bold mb-2">16</div>
+        <p class="text-white/55 text-base font-body">levers et couchers de soleil par période de 24 heures. L'aube, toutes les 90 minutes.</p>
       </div>
       <div class="reveal liquid-glass rounded-3xl p-8">
-        <div class="text-4xl font-instrument mb-2">32</div>
-        <p class="text-white/55 text-sm">voyageurs maximum à bord. Un équipage de 11 personnes dédié à votre séjour.</p>
+        <div class="text-4xl font-display font-bold mb-2">32</div>
+        <p class="text-white/55 text-base font-body">voyageurs maximum à bord. Un équipage de 11 personnes dédié à votre séjour.</p>
       </div>
     </div>
   </section>
@@ -220,22 +241,21 @@
   <!-- ============ À BORD — BENTO ============ -->
   <section id="board" class="relative py-20 md:py-28 px-6 md:px-12 max-w-6xl mx-auto">
     <div class="reveal text-center max-w-2xl mx-auto mb-14">
-      <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5">À bord</p>
-      <h2 class="font-instrument text-4xl md:text-5xl">Tout a été repensé pour l'apesanteur</h2>
+      <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5 font-body font-semibold">À bord</p>
+      <h2 class="font-display text-3xl md:text-4xl font-semibold">Tout a été repensé pour l'apesanteur</h2>
     </div>
 
     <div class="grid md:grid-cols-3 gap-5 auto-rows-[minmax(0,1fr)]">
-      <!-- A : big KPI + chart (span 2) -->
       <div class="reveal liquid-glass rounded-3xl p-8 md:col-span-2 flex flex-col">
         <div class="flex items-start justify-between">
           <div>
-            <p class="text-[11px] uppercase tracking-[0.25em] text-sky-300/80 mb-2 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-sky-400 inline-block animate-pulse"></span> En orbite · temps réel</p>
-            <div class="text-4xl md:text-5xl font-instrument">27 500 <span class="text-xl align-top text-white/60">km/h</span></div>
-            <p class="text-white/50 text-sm mt-1">vitesse de croisière — une orbite complète toutes les 90 minutes.</p>
+            <p class="text-[11px] uppercase tracking-[0.25em] text-sky-300/80 mb-2 flex items-center gap-2 font-body font-semibold"><span class="w-2 h-2 rounded-full bg-sky-400 inline-block animate-pulse"></span> En orbite · temps réel</p>
+            <div class="text-4xl md:text-5xl font-display font-bold">27 500 <span class="text-xl align-top text-white/60">km/h</span></div>
+            <p class="text-white/50 text-base mt-1 font-body">vitesse de croisière — une orbite complète toutes les 90 minutes.</p>
           </div>
           <div class="text-right hidden sm:block">
-            <div class="text-2xl font-instrument">400 km</div>
-            <p class="text-white/45 text-xs">altitude stabilisée</p>
+            <div class="text-2xl font-display font-bold">400 km</div>
+            <p class="text-white/45 text-xs font-body">altitude stabilisée</p>
           </div>
         </div>
         <div class="bento-bars mt-8">
@@ -245,56 +265,53 @@
           <i style="height:52%"></i><i style="height:68%"></i>
         </div>
         <div class="mt-6">
-          <h3 class="text-lg font-medium">Une mécanique de précision</h3>
-          <p class="text-white/55 text-sm mt-1">Chaque paramètre de vol est supervisé en continu : altitude, cap, arrimage. Vous n'avez qu'à regarder défiler la Terre.</p>
+          <h3 class="text-xl font-display font-semibold">Une mécanique de précision</h3>
+          <p class="text-white/55 text-base mt-1 font-body">Chaque paramètre de vol est supervisé en continu : altitude, cap, arrimage. Vous n'avez qu'à regarder défiler la Terre.</p>
         </div>
       </div>
 
-      <!-- B : systems health (span 1) -->
       <div class="reveal liquid-glass rounded-3xl p-8 flex flex-col">
-        <div class="text-3xl font-instrument">99,99 %</div>
-        <p class="text-white/50 text-sm mt-1">disponibilité des systèmes vitaux, redondance triple à bord.</p>
+        <div class="text-3xl font-display font-bold">99,99 %</div>
+        <p class="text-white/50 text-base mt-1 font-body">disponibilité des systèmes vitaux, redondance triple à bord.</p>
         <div class="mt-6 space-y-4">
-          <p class="text-[10px] uppercase tracking-[0.2em] text-white/40 flex items-center justify-between">Systèmes de bord <span class="text-sky-300 normal-case tracking-normal">● 100% opérationnels</span></p>
+          <p class="text-[10px] uppercase tracking-[0.2em] text-white/40 flex items-center justify-between font-body font-semibold">Systèmes de bord <span class="text-sky-300 normal-case tracking-normal">● 100% opérationnels</span></p>
           <div>
-            <p class="text-xs text-white/60 mb-1.5">Support-vie</p>
+            <p class="text-sm text-white/60 mb-1.5 font-body">Support-vie</p>
             <div class="dotrow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
           </div>
           <div>
-            <p class="text-xs text-white/60 mb-1.5">Navigation</p>
+            <p class="text-sm text-white/60 mb-1.5 font-body">Navigation</p>
             <div class="dotrow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="off"></i><i class="off"></i></div>
           </div>
           <div>
-            <p class="text-xs text-white/60 mb-1.5">Amarrage</p>
+            <p class="text-sm text-white/60 mb-1.5 font-body">Amarrage</p>
             <div class="dotrow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="off"></i><i class="off"></i><i class="off"></i><i class="off"></i><i class="off"></i></div>
           </div>
         </div>
-        <h3 class="text-lg font-medium mt-6">Sécurité certifiée</h3>
+        <h3 class="text-xl font-display font-semibold mt-6">Sécurité certifiée</h3>
       </div>
 
-      <!-- C : image card small (span 1) -->
       <div class="reveal rounded-3xl overflow-hidden relative border border-white/10 min-h-[300px] group">
         <img src="assets/cupola-view.jpg" alt="Vue de la Terre depuis la coupole" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
         <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(5,7,13,.1) 30%,rgba(5,7,13,.9) 100%);"></div>
         <div class="absolute bottom-0 p-7">
           <i data-lucide="telescope" class="w-6 h-6 text-sky-300 mb-3"></i>
-          <h3 class="text-lg font-medium">La coupole d'observation</h3>
-          <p class="text-white/60 text-sm mt-1">7 mètres de verre pour contempler la Terre et les aurores sans filtre.</p>
+          <h3 class="text-xl font-display font-semibold">La coupole d'observation</h3>
+          <p class="text-white/60 text-base mt-1 font-body">7 mètres de verre pour contempler la Terre et les aurores sans filtre.</p>
         </div>
       </div>
 
-      <!-- D : image card wide (span 2) -->
       <div class="reveal rounded-3xl overflow-hidden relative border border-white/10 md:col-span-2 min-h-[300px] group">
-        <img src="assets/corridor.jpg" alt="Intérieur de la station Cosmos Vela" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+        <img src="assets/corridor.jpg" alt="Intérieur de la station Vélocity" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
         <div class="absolute inset-0" style="background:linear-gradient(90deg,rgba(5,7,13,.92) 0%,rgba(5,7,13,.4) 60%,rgba(5,7,13,.2) 100%);"></div>
         <div class="absolute inset-0 flex flex-col justify-center p-7 md:p-10 max-w-md">
-          <p class="text-[11px] uppercase tracking-[0.25em] text-sky-300/80 mb-3">Bien-être orbital</p>
-          <h3 class="font-instrument text-2xl md:text-3xl">Spa en apesanteur & gastronomie signée</h3>
-          <p class="text-white/60 text-sm mt-3">Soins zéro-gravité, bulles d'eau flottantes, et un menu repensé par un chef étoilé — servi face au lever de soleil, seize fois par jour.</p>
+          <p class="text-[11px] uppercase tracking-[0.25em] text-sky-300/80 mb-3 font-body font-semibold">Bien-être orbital</p>
+          <h3 class="font-display text-2xl md:text-3xl font-semibold">Spa en apesanteur & gastronomie signée</h3>
+          <p class="text-white/60 text-base mt-3 font-body">Soins zéro-gravité, bulles d'eau flottantes, et un menu repensé par un chef étoilé — servi face au lever de soleil, seize fois par jour.</p>
           <div class="flex gap-8 mt-6">
-            <div><div class="text-2xl font-instrument">8</div><p class="text-white/45 text-xs">baies panoramiques</p></div>
-            <div><div class="text-2xl font-instrument">11</div><p class="text-white/45 text-xs">membres d'équipage</p></div>
-            <div><div class="text-2xl font-instrument">0 g</div><p class="text-white/45 text-xs">de pesanteur</p></div>
+            <div><div class="text-2xl font-display font-bold">8</div><p class="text-white/45 text-xs font-body">baies panoramiques</p></div>
+            <div><div class="text-2xl font-display font-bold">11</div><p class="text-white/45 text-xs font-body">membres d'équipage</p></div>
+            <div><div class="text-2xl font-display font-bold">0 g</div><p class="text-white/45 text-xs font-body">de pesanteur</p></div>
           </div>
         </div>
       </div>
@@ -304,45 +321,45 @@
   <!-- ============ SUITES ============ -->
   <section id="suites" class="relative py-20 md:py-28 px-6 md:px-12 max-w-6xl mx-auto">
     <div class="reveal text-center max-w-2xl mx-auto mb-16">
-      <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5">Les suites</p>
-      <h2 class="font-instrument text-4xl md:text-5xl">Choisissez votre place dans le ciel</h2>
-      <p class="text-white/55 mt-5">Trois catégories de séjour, une seule vue : la Terre entière.</p>
+      <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5 font-body font-semibold">Les suites</p>
+      <h2 class="font-display text-3xl md:text-4xl font-semibold">Choisissez votre place dans le ciel</h2>
+      <p class="text-white/55 mt-5 text-lg font-body">Trois catégories de séjour, une seule vue : la Terre entière.</p>
     </div>
 
     <div class="grid md:grid-cols-3 gap-6">
       <div class="reveal liquid-glass rounded-3xl p-8 flex flex-col">
-        <h3 class="font-instrument text-2xl">Orbita</h3>
-        <p class="text-white/50 text-sm mt-1">Séjour découverte · 3 nuits</p>
-        <div class="my-6"><span class="text-4xl font-instrument">1,2 M€</span><span class="text-white/45 text-sm"> / personne</span></div>
-        <ul class="space-y-3 text-sm text-white/65 flex-1">
-          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-300 mt-0.5"></i> Suite hublot individuelle</li>
-          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-300 mt-0.5"></i> Accès coupole & spa</li>
-          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-300 mt-0.5"></i> Formation pré-vol incluse</li>
+        <h3 class="font-display text-xl font-semibold">Orbita</h3>
+        <p class="text-white/50 text-sm mt-1 font-body uppercase tracking-wider">Séjour découverte · 3 nuits</p>
+        <div class="my-6"><span class="text-4xl font-display font-bold">1,2 M€</span><span class="text-white/45 text-sm font-body"> / personne</span></div>
+        <ul class="space-y-3 text-base text-white/65 flex-1 font-body">
+          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-300 mt-1"></i> Suite hublot individuelle</li>
+          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-300 mt-1"></i> Accès coupole & spa</li>
+          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-300 mt-1"></i> Formation pré-vol incluse</li>
         </ul>
-        <a href="#waitlist" class="btn-ghost text-center mt-8">Rejoindre la liste</a>
+        <a href="#waitlist" class="btn-ghost text-center mt-8">Rejoindre</a>
       </div>
       <div class="reveal rounded-3xl p-8 flex flex-col relative overflow-hidden"
            style="background:linear-gradient(180deg,rgba(120,180,255,0.16),rgba(120,180,255,0.04));border:1px solid rgba(160,205,255,0.35);">
-        <span class="absolute top-5 right-5 text-[10px] uppercase tracking-widest text-sky-200 border border-sky-200/40 rounded-full px-3 py-1">Le plus choisi</span>
-        <h3 class="font-instrument text-2xl">Cupola</h3>
-        <p class="text-white/60 text-sm mt-1">Séjour signature · 7 nuits</p>
-        <div class="my-6"><span class="text-4xl font-instrument">2,8 M€</span><span class="text-white/50 text-sm"> / personne</span></div>
-        <ul class="space-y-3 text-sm text-white/75 flex-1">
-          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-200 mt-0.5"></i> Suite premium baie 2 m</li>
-          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-200 mt-0.5"></i> Dîner privé sous la coupole</li>
-          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-200 mt-0.5"></i> Session spa zéro-gravité dédiée</li>
-          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-200 mt-0.5"></i> Portrait orbital signé</li>
+        <span class="absolute top-5 right-5 text-[10px] uppercase tracking-widest text-sky-200 border border-sky-200/40 rounded-full px-3 py-1 font-body font-semibold">Le plus choisi</span>
+        <h3 class="font-display text-xl font-semibold">Cupola</h3>
+        <p class="text-white/60 text-sm mt-1 font-body uppercase tracking-wider">Séjour signature · 7 nuits</p>
+        <div class="my-6"><span class="text-4xl font-display font-bold">2,8 M€</span><span class="text-white/50 text-sm font-body"> / personne</span></div>
+        <ul class="space-y-3 text-base text-white/75 flex-1 font-body">
+          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-200 mt-1"></i> Suite premium baie 2 m</li>
+          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-200 mt-1"></i> Dîner privé sous la coupole</li>
+          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-200 mt-1"></i> Session spa zéro-gravité dédiée</li>
+          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-200 mt-1"></i> Portrait orbital signé</li>
         </ul>
-        <a href="#waitlist" class="btn-white text-center mt-8 button-glow">Rejoindre la liste</a>
+        <a href="#waitlist" class="btn-white text-center mt-8 button-glow">Rejoindre</a>
       </div>
       <div class="reveal liquid-glass rounded-3xl p-8 flex flex-col">
-        <h3 class="font-instrument text-2xl">Zenith</h3>
-        <p class="text-white/50 text-sm mt-1">Séjour privatisé · 12 nuits</p>
-        <div class="my-6"><span class="text-4xl font-instrument">Sur devis</span></div>
-        <ul class="space-y-3 text-sm text-white/65 flex-1">
-          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-300 mt-0.5"></i> Module privatisé 2 personnes</li>
-          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-300 mt-0.5"></i> Majordome & chef dédiés</li>
-          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-300 mt-0.5"></i> Sortie extravéhiculaire encadrée</li>
+        <h3 class="font-display text-xl font-semibold">Zenith</h3>
+        <p class="text-white/50 text-sm mt-1 font-body uppercase tracking-wider">Séjour privatisé · 12 nuits</p>
+        <div class="my-6"><span class="text-4xl font-display font-bold">Sur devis</span></div>
+        <ul class="space-y-3 text-base text-white/65 flex-1 font-body">
+          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-300 mt-1"></i> Module privatisé 2 personnes</li>
+          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-300 mt-1"></i> Majordome & chef dédiés</li>
+          <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-sky-300 mt-1"></i> Sortie extravéhiculaire encadrée</li>
         </ul>
         <a href="#waitlist" class="btn-ghost text-center mt-8">Nous contacter</a>
       </div>
@@ -352,58 +369,56 @@
   <!-- ============ HOW IT WORKS ============ -->
   <section id="how" class="relative py-20 md:py-28 px-6 md:px-12 max-w-5xl mx-auto">
     <div class="reveal text-center max-w-2xl mx-auto mb-16">
-      <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5">Le voyage</p>
-      <h2 class="font-instrument text-4xl md:text-5xl">De la réservation à l'orbite</h2>
+      <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5 font-body font-semibold">Le voyage</p>
+      <h2 class="font-display text-3xl md:text-4xl font-semibold">De la réservation à l'orbite</h2>
     </div>
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="reveal"><div class="text-sky-300 text-sm font-medium mb-3">Étape 01</div><h3 class="font-instrument text-xl mb-2">Réservation</h3><p class="text-white/55 text-sm">Vous rejoignez la liste, nous fixons ensemble vos dates de départ et votre suite.</p></div>
-      <div class="reveal"><div class="text-sky-300 text-sm font-medium mb-3">Étape 02</div><h3 class="font-instrument text-xl mb-2">Préparation</h3><p class="text-white/55 text-sm">5 jours de formation en centre spatial : santé, apesanteur, sécurité. Tout est pris en charge.</p></div>
-      <div class="reveal"><div class="text-sky-300 text-sm font-medium mb-3">Étape 03</div><h3 class="font-instrument text-xl mb-2">Départ</h3><p class="text-white/55 text-sm">Décollage et arrimage à Cosmos Vela en quelques heures. Bienvenue à bord.</p></div>
-      <div class="reveal"><div class="text-sky-300 text-sm font-medium mb-3">Étape 04</div><h3 class="font-instrument text-xl mb-2">Votre séjour</h3><p class="text-white/55 text-sm">3 à 12 nuits au-dessus du monde, puis un retour en douceur — transformé.</p></div>
+      <div class="reveal"><div class="text-sky-300 text-sm font-semibold mb-3 font-body uppercase tracking-widest">Étape 01</div><h3 class="font-display text-lg mb-2 font-semibold">Réservation</h3><p class="text-white/55 text-base font-body">Vous rejoignez la liste, nous fixons ensemble vos dates de départ et votre suite.</p></div>
+      <div class="reveal"><div class="text-sky-300 text-sm font-semibold mb-3 font-body uppercase tracking-widest">Étape 02</div><h3 class="font-display text-lg mb-2 font-semibold">Préparation</h3><p class="text-white/55 text-base font-body">5 jours de formation en centre spatial : santé, apesanteur, sécurité. Tout est pris en charge.</p></div>
+      <div class="reveal"><div class="text-sky-300 text-sm font-semibold mb-3 font-body uppercase tracking-widest">Étape 03</div><h3 class="font-display text-lg mb-2 font-semibold">Départ</h3><p class="text-white/55 text-base font-body">Décollage et arrimage à Vélocity en quelques heures. Bienvenue à bord.</p></div>
+      <div class="reveal"><div class="text-sky-300 text-sm font-semibold mb-3 font-body uppercase tracking-widest">Étape 04</div><h3 class="font-display text-lg mb-2 font-semibold">Votre séjour</h3><p class="text-white/55 text-base font-body">3 à 12 nuits au-dessus du monde, puis un retour en douceur — transformé.</p></div>
     </div>
   </section>
 
   <!-- ============ FAQ ============ -->
   <section id="faq" class="relative py-16 md:py-24 px-6 md:px-12 max-w-3xl mx-auto">
-    <h2 class="reveal font-instrument text-3xl md:text-4xl text-center mb-12">Questions fréquentes</h2>
+    <h2 class="reveal font-display text-2xl md:text-4xl text-center mb-12 font-semibold">Questions fréquentes</h2>
     <div class="space-y-3" id="faqList">
       <div class="reveal liquid-glass rounded-2xl overflow-hidden">
-        <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90">Faut-il être astronaute ou sportif de haut niveau ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
-        <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-sm"><p class="pb-5">Non. Une condition physique normale suffit. Notre formation de 5 jours et un bilan médical préparent chaque voyageur, quel que soit son âge (18 à 75 ans).</p></div>
+        <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90 text-lg font-body font-medium">Faut-il être astronaute ou sportif de haut niveau ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
+        <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-base font-body"><p class="pb-5">Non. Une condition physique normale suffit. Notre formation de 5 jours et un bilan médical préparent chaque voyageur, quel que soit son âge (18 à 75 ans).</p></div>
       </div>
       <div class="reveal liquid-glass rounded-2xl overflow-hidden">
-        <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90">Combien de temps dure un séjour ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
-        <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-sm"><p class="pb-5">De 3 à 12 nuits selon la formule choisie, formation pré-vol non comprise. Le trajet aller-retour ajoute environ une journée.</p></div>
+        <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90 text-lg font-body font-medium">Combien de temps dure un séjour ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
+        <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-base font-body"><p class="pb-5">De 3 à 12 nuits selon la formule choisie, formation pré-vol non comprise. Le trajet aller-retour ajoute environ une journée.</p></div>
       </div>
       <div class="reveal liquid-glass rounded-2xl overflow-hidden">
-        <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90">Que comprend le prix ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
-        <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-sm"><p class="pb-5">Formation, vol aller-retour, hébergement, pension complète, soins spa et accompagnement personnalisé. Il ne reste plus qu'à lever les yeux.</p></div>
+        <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90 text-lg font-body font-medium">Que comprend le prix ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
+        <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-base font-body"><p class="pb-5">Formation, vol aller-retour, hébergement, pension complète, soins spa et accompagnement personnalisé. Il ne reste plus qu'à lever les yeux.</p></div>
       </div>
       <div class="reveal liquid-glass rounded-2xl overflow-hidden">
-        <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90">Rejoindre la liste m'engage-t-il ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
-        <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-sm"><p class="pb-5">Aucun engagement. La liste d'attente vous donne un accès prioritaire aux premiers départs 2027 et à nos annonces. Vous restez libre à chaque étape.</p></div>
+        <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90 text-lg font-body font-medium">Rejoindre la liste m'engage-t-il ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
+        <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-base font-body"><p class="pb-5">Aucun engagement. La liste d'attente vous donne un accès prioritaire aux premiers départs 2027 et à nos annonces. Vous restez libre à chaque étape.</p></div>
       </div>
     </div>
   </section>
 
-  <!-- ============ FINAL CTA / WAITLIST ============ -->
+  <!-- ============ FINAL CTA / WAITLIST — HYPERSPACE ============ -->
   <section id="waitlist" class="relative py-24 md:py-32 px-6 overflow-hidden">
-    <div class="absolute inset-0 -z-10">
-      <img src="assets/earth-night.jpg" alt="La Terre de nuit vue de l'espace" class="w-full h-full object-cover opacity-30" loading="lazy" />
-      <div class="absolute inset-0" style="background:radial-gradient(ellipse at 50% 40%,rgba(5,7,13,.5),rgba(5,7,13,.92) 70%);"></div>
-    </div>
+    <canvas id="hyperCanvas" class="absolute inset-0 w-full h-full -z-10"></canvas>
+    <div class="absolute inset-0 -z-10" style="background:radial-gradient(ellipse at 50% 45%, rgba(5,7,13,.35) 20%, rgba(5,7,13,.85) 70%, #05070d 100%);"></div>
     <div class="reveal max-w-2xl mx-auto text-center">
-      <p class="uppercase tracking-[0.3em] text-[11px] text-white/50 mb-5">Places limitées · Départs 2027</p>
-      <h2 class="font-instrument text-4xl md:text-6xl leading-tight">Réservez votre <span class="italic">place dans le ciel.</span></h2>
-      <p class="text-white/65 mt-6 md:text-lg">
+      <p class="uppercase tracking-[0.3em] text-[11px] text-white/60 mb-5 font-body font-semibold">Places limitées · Départs 2027</p>
+      <h2 class="font-display text-3xl md:text-5xl leading-tight font-semibold">Réservez votre place dans le ciel.</h2>
+      <p class="text-white/70 mt-6 text-lg md:text-xl font-body">
         Les premiers séjours sont réservés aux membres de la liste d'attente. Laissez votre email : nous vous contactons dès l'ouverture des réservations.
       </p>
       <form id="waitlistForm" class="mt-10 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-        <input type="email" required placeholder="votre@email.com" class="flex-1 liquid-glass rounded-full px-6 py-4 text-sm text-white placeholder-white/40 outline-none focus:border-white/30" />
+        <input type="email" required placeholder="votre@email.com" class="flex-1 liquid-glass rounded-full px-6 py-4 text-base text-white placeholder-white/40 outline-none focus:border-white/30 font-body" />
         <button type="submit" class="btn-white button-glow whitespace-nowrap">Rejoindre</button>
       </form>
-      <p id="formMsg" class="text-sky-300 text-sm mt-4 h-5 transition-opacity opacity-0">Merci ! Vous êtes sur la liste — à très bientôt en orbite. ✦</p>
-      <p class="text-white/35 text-xs mt-6">Démonstration académique — aucune donnée n'est réellement collectée ni transmise.</p>
+      <p id="formMsg" class="text-sky-300 text-base mt-4 h-5 transition-opacity opacity-0 font-body">Merci ! Vous êtes sur la liste — à très bientôt en orbite. ✦</p>
+      <p class="text-white/35 text-sm mt-6 font-body">Démonstration académique — aucune donnée n'est réellement collectée ni transmise.</p>
     </div>
   </section>
 
@@ -412,37 +427,37 @@
     <div class="max-w-6xl mx-auto">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div>
-          <a href="#hero" class="font-dancing text-3xl">Cosmos Vela</a>
-          <p class="text-white/50 text-sm mt-3 max-w-xs">Le premier hôtel de luxe en orbite. Départs prévus à partir d'avril 2027.</p>
+          <a href="#hero" class="logo text-2xl">Vélocity</a>
+          <p class="text-white/50 text-base mt-3 max-w-xs font-body">Le premier hôtel de luxe en orbite. Départs prévus à partir d'avril 2027.</p>
         </div>
-        <div class="flex gap-8 text-sm">
+        <div class="flex gap-8 text-base font-body">
           <div class="flex flex-col gap-2">
-            <span class="text-white/40 uppercase text-[11px] tracking-widest mb-1">Explorer</span>
+            <span class="text-white/40 uppercase text-[11px] tracking-widest mb-1 font-semibold">Explorer</span>
             <a href="#experience" class="text-white/65 hover:text-white transition">L'expérience</a>
             <a href="#suites" class="text-white/65 hover:text-white transition">Les suites</a>
             <a href="#faq" class="text-white/65 hover:text-white transition">Infos</a>
           </div>
           <div class="flex flex-col gap-2">
-            <span class="text-white/40 uppercase text-[11px] tracking-widest mb-1">Contact</span>
+            <span class="text-white/40 uppercase text-[11px] tracking-widest mb-1 font-semibold">Contact</span>
             <a href="#waitlist" class="text-white/65 hover:text-white transition">Liste d'attente</a>
-            <span class="text-white/65">hello@cosmosvela.space</span>
+            <span class="text-white/65">hello@velocity.space</span>
           </div>
         </div>
       </div>
 
       <div class="divider-glow my-10"></div>
 
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 text-sm">
-        <p class="font-instrument text-lg italic text-white/85">« No Code is the New Future »</p>
-        <p class="text-white/50">Projet réalisé par <span class="text-white/80">Théo GILLARD · Eliot BOYER · Anis BENKHEROUF</span></p>
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <p class="font-display text-base uppercase tracking-[0.2em] text-white/85">« No Code is the New Future »</p>
+        <p class="text-white/50 font-body text-base">Projet réalisé par <span class="text-white/80">Théo GILLARD · Eliot BOYER · Anis BENKHEROUF</span></p>
       </div>
-      <p class="text-white/35 text-xs mt-6 max-w-3xl leading-relaxed">
+      <p class="text-white/35 text-sm mt-6 max-w-3xl leading-relaxed font-body">
         EM Normandie — M2 ALT Digital Innovation & Transformation · Challenge No-Code, semaine 1.
-        Cosmos Vela est un concept fictif créé dans un cadre pédagogique.
+        Vélocity est un concept fictif créé dans un cadre pédagogique.
         Landing page conçue avec l'aide de l'IA générative <span class="text-white/55">Claude (Anthropic)</span> pour le design et le code — contenus vérifiés et retravaillés par l'équipe.
-        Textures de la Terre : <span class="text-white/55">Solar System Scope (CC BY 4.0)</span>. Photographies d'illustration : <span class="text-white/55">Unsplash (licence Unsplash)</span>.
+        Photographies d'illustration : <span class="text-white/55">Unsplash (licence Unsplash)</span>.
       </p>
-      <p class="text-white/30 text-xs mt-4">© 2026 Cosmos Vela (concept étudiant). Tous droits réservés.</p>
+      <p class="text-white/30 text-sm mt-4 font-body">© 2026 Vélocity (concept étudiant). Tous droits réservés.</p>
     </div>
   </footer>
 
@@ -450,16 +465,15 @@
   <script>
     lucide.createIcons();
 
-    // Starfield
-    function makeStars(id, count, maxSize) {
-      const c = document.getElementById(id); const frag = document.createDocumentFragment();
-      for (let i=0;i<count;i++){ const s=document.createElement('div'); s.className='star';
-        const size=Math.random()*maxSize+0.4; s.style.width=size+'px'; s.style.height=size+'px';
+    // Starfield (manifesto)
+    (function(){
+      const c=document.getElementById('mstars'); if(!c) return; const frag=document.createDocumentFragment();
+      for(let i=0;i<120;i++){const s=document.createElement('div');s.className='star';
+        const size=Math.random()*1.8+0.4; s.style.width=size+'px'; s.style.height=size+'px';
         s.style.left=Math.random()*100+'%'; s.style.top=Math.random()*100+'%';
-        s.style.setProperty('--dur',(Math.random()*4+2)+'s'); s.style.animationDelay=Math.random()*4+'s'; frag.appendChild(s); }
+        s.style.setProperty('--dur',(Math.random()*4+2)+'s'); s.style.animationDelay=Math.random()*4+'s'; frag.appendChild(s);}
       c.appendChild(frag);
-    }
-    makeStars('stars',140,1.6); makeStars('stars2',60,2.4);
+    })();
 
     // Countdown
     (function(){
@@ -480,25 +494,21 @@
     hamburger.addEventListener('click',()=>toggleMenu());
     document.querySelectorAll('.menu-link').forEach(l=>l.addEventListener('click',()=>toggleMenu(false)));
 
-    // Reveal on scroll (simple viewport check — robust everywhere, never leaves content hidden)
+    // Reveal + neon + nav backdrop (scroll-check, robust)
     const revealEls=[...document.querySelectorAll('.reveal')];
-    function checkReveal(){const vh=window.innerHeight||document.documentElement.clientHeight;revealEls.forEach(el=>{if(el.getBoundingClientRect().top < vh*0.9) el.classList.add('in');});}
-
-    // Parallax clouds + nav backdrop + reveal
-    const clouds=document.querySelectorAll('.parallax-cloud'), manifesto=document.getElementById('manifesto'), nav=document.getElementById('nav');
+    const nav=document.getElementById('nav');
+    const quote=document.getElementById('founderQuote');
     function onScroll(){
-      const rect=manifesto.getBoundingClientRect();
-      const progress=Math.min(1,Math.max(0,(window.innerHeight-rect.top)/(window.innerHeight+rect.height)));
-      clouds.forEach(cl=>{const speed=parseFloat(cl.dataset.speed);cl.style.transform=`translateY(${(0.5-progress)*260*speed/0.1}px)`;});
+      const vh=window.innerHeight||document.documentElement.clientHeight;
+      revealEls.forEach(el=>{if(el.getBoundingClientRect().top < vh*0.9) el.classList.add('in');});
+      if(quote && quote.getBoundingClientRect().top < vh*0.72) quote.classList.add('lit');
       nav.classList.toggle('scrolled',window.scrollY>40);
-      checkReveal();
     }
     window.addEventListener('scroll',onScroll,{passive:true});
     window.addEventListener('resize',onScroll);
     window.addEventListener('load',onScroll);
     onScroll();
-    // failsafe: nothing stays invisible
-    setTimeout(()=>revealEls.forEach(el=>el.classList.add('in')),3500);
+    setTimeout(()=>{revealEls.forEach(el=>el.classList.add('in')); if(quote) quote.classList.add('lit');},3500);
 
     // FAQ accordion
     document.querySelectorAll('.faq-q').forEach(btn=>{
@@ -513,109 +523,34 @@
 
     // Waitlist (demo only)
     document.getElementById('waitlistForm').addEventListener('submit',e=>{e.preventDefault();document.getElementById('formMsg').style.opacity='1';e.target.reset();});
-  </script>
 
-  <!-- ============ 3D EARTH (Three.js) ============ -->
-  <script type="module">
-    import * as THREE from 'three';
-    try {
-      THREE.ColorManagement.enabled = false;
-      const canvas = document.getElementById('earthCanvas');
-      const hero = document.getElementById('hero');
-      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-      camera.position.set(0, 0, 9);
-      camera.lookAt(0, 0, 0);
-
-      // ---- Earth group, pushed below the viewport so we see the top limb ----
-      const group = new THREE.Group();
-      group.position.y = -5.75;   // lower = more of the planet peeks in at the bottom
-      scene.add(group);
-
-      const R = 4.6;
-      const loader = new THREE.TextureLoader();
-      const dayTex = loader.load('assets/earth_day.jpg');
-      const nightTex = loader.load('assets/earth_night.jpg');
-      const cloudTex = loader.load('assets/earth_clouds.jpg');
-      [dayTex, nightTex, cloudTex].forEach(t => { t.anisotropy = 4; });
-
-      const sunDirection = new THREE.Vector3(0.95, 0.30, 0.18).normalize();
-
-      // Day/Night shader
-      const earthMat = new THREE.ShaderMaterial({
-        uniforms: { dayTexture:{value:dayTex}, nightTexture:{value:nightTex}, sunDirection:{value:sunDirection} },
-        vertexShader: `
-          varying vec2 vUv; varying vec3 vNormalW;
-          void main(){ vUv = uv; vNormalW = normalize(mat3(modelMatrix) * normal);
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
-        fragmentShader: `
-          uniform sampler2D dayTexture; uniform sampler2D nightTexture; uniform vec3 sunDirection;
-          varying vec2 vUv; varying vec3 vNormalW;
-          void main(){
-            vec3 day = texture2D(dayTexture, vUv).rgb;
-            vec3 night = texture2D(nightTexture, vUv).rgb;
-            float c = dot(normalize(vNormalW), normalize(sunDirection));
-            float m = smoothstep(-0.10, 0.28, c);
-            vec3 col = mix(night * 1.7, day, m);
-            gl_FragColor = vec4(col, 1.0);
-          }`,
-      });
-      const earth = new THREE.Mesh(new THREE.SphereGeometry(R, 96, 96), earthMat);
-      earth.rotation.z = 0.32; // axial tilt for a natural look
-      group.add(earth);
-
-      // Clouds
-      const cloudsMat = new THREE.MeshBasicMaterial({ map: cloudTex, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending, depthWrite: false });
-      const cloudsMesh = new THREE.Mesh(new THREE.SphereGeometry(R * 1.006, 64, 64), cloudsMat);
-      cloudsMesh.rotation.z = 0.32;
-      group.add(cloudsMesh);
-
-      // Atmosphere glow (fresnel, back side, additive)
-      const atmoMat = new THREE.ShaderMaterial({
-        uniforms: { glowColor:{value:new THREE.Color(0x5aa6ff)}, sunDirection:{value:sunDirection} },
-        vertexShader: `
-          varying vec3 vNormalW; varying vec3 vPosW;
-          void main(){ vNormalW = normalize(mat3(modelMatrix) * normal);
-            vPosW = (modelMatrix * vec4(position,1.0)).xyz;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
-        fragmentShader: `
-          uniform vec3 glowColor; uniform vec3 sunDirection;
-          varying vec3 vNormalW; varying vec3 vPosW;
-          void main(){
-            vec3 viewDir = normalize(cameraPosition - vPosW);
-            float rim = pow(1.0 - abs(dot(vNormalW, viewDir)), 3.2);
-            float dayside = smoothstep(-0.35, 0.5, dot(normalize(vNormalW), normalize(sunDirection)));
-            gl_FragColor = vec4(glowColor, rim * (0.35 + 0.65 * dayside));
-          }`,
-        side: THREE.BackSide, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false,
-      });
-      const atmo = new THREE.Mesh(new THREE.SphereGeometry(R * 1.14, 64, 64), atmoMat);
-      group.add(atmo);
-
-      function resize(){
-        const w = hero.clientWidth, h = hero.clientHeight;
-        renderer.setSize(w, h, false);
-        camera.aspect = w / h; camera.updateProjectionMatrix();
+    // ===== HYPERSPACE / LIGHTSPEED (canvas warp) =====
+    (function(){
+      const canvas=document.getElementById('hyperCanvas'); if(!canvas) return;
+      const ctx=canvas.getContext('2d');
+      const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let w,h,cx,cy,stars=[]; const N=window.innerWidth<640?220:420; const SPEED=7;
+      function resize(){ w=canvas.width=canvas.clientWidth; h=canvas.height=canvas.clientHeight; cx=w/2; cy=h/2; }
+      function reset(s,init){ s.x=(Math.random()*2-1)*w; s.y=(Math.random()*2-1)*h; s.z=init?Math.random()*w:w; s.pz=s.z; }
+      function build(){ stars=[]; for(let i=0;i<N;i++){const s={};reset(s,true);stars.push(s);} }
+      function frame(){
+        ctx.fillStyle='rgba(5,7,13,0.32)'; ctx.fillRect(0,0,w,h);
+        for(const s of stars){
+          s.pz=s.z; s.z-=SPEED; if(s.z<1) reset(s,false);
+          const k=w*0.6;
+          const sx=cx+(s.x/s.z)*k, sy=cy+(s.y/s.z)*k;
+          const px=cx+(s.x/s.pz)*k, py=cy+(s.y/s.pz)*k;
+          const a=Math.min(1,(1-s.z/w)*1.4);
+          ctx.strokeStyle='rgba('+ (150+Math.round(60*a)) +','+ (195+Math.round(40*a)) +',255,'+a+')';
+          ctx.lineWidth=Math.max(0.5,(1-s.z/w)*2.2);
+          ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(sx,sy); ctx.stroke();
+        }
+        requestAnimationFrame(frame);
       }
-      resize();
-      window.addEventListener('resize', resize);
-
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      function animate(){
-        requestAnimationFrame(animate);
-        if(!reduce){ earth.rotation.y += 0.00042; cloudsMesh.rotation.y += 0.00055; }
-        renderer.render(scene, camera);
-      }
-      animate();
-      // textures loaded -> hide the CSS fallback
-      let loaded = 0; const onload = () => { if(++loaded>=1){ const f=document.getElementById('earthFallback'); if(f) f.style.opacity='0'; } };
-      dayTex.image ? onload() : (dayTex.onUpdate = onload);
-    } catch (err) {
-      console.warn('WebGL Earth indisponible, fallback CSS actif.', err);
-    }
+      function start(){ resize(); build(); if(reduce){ ctx.fillStyle='#05070d'; ctx.fillRect(0,0,w,h);} else frame(); }
+      window.addEventListener('resize',()=>{resize();build();});
+      if(document.readyState==='complete') start(); else window.addEventListener('load',start);
+    })();
   </script>
 </body>
 </html>

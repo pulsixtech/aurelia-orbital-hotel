@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AURELIA — Le premier hôtel en orbite</title>
-  <meta name="description" content="AURELIA, le premier hôtel de luxe en orbite basse. Suites panoramiques, 16 levers de soleil par jour, spa en apesanteur. Rejoignez la liste d'attente." />
+  <title>Cosmos Vela — Le premier hôtel en orbite</title>
+  <meta name="description" content="Cosmos Vela, le premier hôtel de luxe en orbite basse. Suites panoramiques, 16 levers de soleil par jour, spa en apesanteur. Rejoignez la liste d'attente." />
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,143 +15,67 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            inter: ['Inter', 'sans-serif'],
-            instrument: ['Instrument Serif', 'serif'],
-            dancing: ['Dancing Script', 'cursive'],
-          },
-          colors: {
-            ink: '#05070d',
-          },
+      theme: { extend: {
+        fontFamily: {
+          inter: ['Inter', 'sans-serif'],
+          instrument: ['Instrument Serif', 'serif'],
+          dancing: ['Dancing Script', 'cursive'],
         },
-      },
+        colors: { ink: '#05070d' },
+      } },
     };
   </script>
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
+  <!-- Three.js (for the 3D Earth) -->
+  <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+  </script>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #05070d;
-      color: #fff;
-      overflow-x: hidden;
-    }
+    body { font-family: 'Inter', sans-serif; background: #05070d; color: #fff; overflow-x: hidden; }
     .font-instrument { font-family: 'Instrument Serif', serif; }
     .font-dancing { font-family: 'Dancing Script', cursive; }
 
-    /* ---- Glass / glow helpers (from validated template) ---- */
     .liquid-glass {
       background: rgba(255,255,255,0.02);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
       border: 1px solid rgba(255,255,255,0.08);
       box-shadow: inset 0 1px 1px rgba(255,255,255,0.10);
     }
     .text-glow { text-shadow: 0 0 40px rgba(180,215,255,0.35), 0 0 90px rgba(120,180,255,0.18); }
     .button-glow { box-shadow: 0 0 22px rgba(255,255,255,0.25), 0 0 46px rgba(255,255,255,0.08); }
 
-    /* ---- Starfield ---- */
-    #stars, #stars2 { position: absolute; inset: 0; pointer-events: none; }
-    .star {
-      position: absolute; border-radius: 50%; background: #fff;
-      animation: twinkle var(--dur, 4s) ease-in-out infinite alternate;
-    }
-    @keyframes twinkle { from { opacity: .15; } to { opacity: 1; } }
+    /* Starfield */
+    #stars, #stars2 { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+    .star { position: absolute; border-radius: 50%; background: #fff; animation: twinkle var(--dur, 4s) ease-in-out infinite alternate; }
+    @keyframes twinkle { from { opacity: .12; } to { opacity: 1; } }
 
-    /* ---- Earth ---- */
-    .earth-wrap {
-      position: absolute; left: 50%; bottom: -138vw; transform: translateX(-50%);
-      width: 200vw; height: 200vw; border-radius: 50%;
-      z-index: 1;
-    }
-    .earth {
-      position: absolute; inset: 0; border-radius: 50%; overflow: hidden;
-      background:
-        radial-gradient(circle at 50% 22%, #2b6fb5 0%, #17457e 26%, #0c2a55 48%, #071b3a 66%, #04102a 100%);
-      box-shadow:
-        inset 0 40px 120px rgba(150,205,255,0.25),
-        inset 0 -60px 200px rgba(0,0,0,0.85);
-    }
-    /* rotating surface band = planet spin */
-    .earth-surface {
-      position: absolute; inset: 0; border-radius: 50%;
-      background-repeat: repeat-x;
-      background-size: 50% 100%;
-      opacity: 0.9;
-      background-image:
-        radial-gradient(120px 70px at 8% 30%, rgba(60,150,110,0.55), transparent 60%),
-        radial-gradient(160px 90px at 20% 38%, rgba(80,170,120,0.45), transparent 62%),
-        radial-gradient(90px 60px at 30% 26%, rgba(120,150,90,0.40), transparent 60%),
-        radial-gradient(140px 80px at 42% 40%, rgba(70,155,115,0.50), transparent 62%),
-        radial-gradient(110px 65px at 12% 44%, rgba(90,120,80,0.38), transparent 60%);
-      animation: spin-surface 90s linear infinite;
-      filter: blur(1px);
-    }
-    @keyframes spin-surface { from { background-position: 0 0; } to { background-position: 100% 0; } }
-    /* clouds layer */
-    .earth-clouds {
-      position: absolute; inset: 0; border-radius: 50%;
-      background-repeat: repeat-x; background-size: 50% 100%;
-      opacity: 0.35; mix-blend-mode: screen;
-      background-image:
-        radial-gradient(90px 40px at 15% 32%, rgba(255,255,255,0.9), transparent 60%),
-        radial-gradient(130px 50px at 35% 40%, rgba(255,255,255,0.8), transparent 62%),
-        radial-gradient(100px 45px at 55% 30%, rgba(255,255,255,0.85), transparent 60%),
-        radial-gradient(120px 48px at 78% 42%, rgba(255,255,255,0.8), transparent 62%);
-      animation: spin-surface 70s linear infinite;
-      filter: blur(3px);
-    }
-    /* day/night terminator */
-    .earth-night {
-      position: absolute; inset: 0; border-radius: 50%;
-      background: linear-gradient(105deg, rgba(2,6,18,0) 44%, rgba(2,6,18,0.55) 60%, rgba(2,6,18,0.92) 78%);
-    }
-    /* atmosphere rim glow */
-    .earth-atmos {
-      position: absolute; inset: -3px; border-radius: 50%;
-      box-shadow:
-        inset 0 0 60px 12px rgba(120,190,255,0.55),
-        0 0 90px 30px rgba(90,160,255,0.30);
-    }
-    .earth-halo {
-      position: absolute; left: 50%; bottom: -150vw; transform: translateX(-50%);
-      width: 205vw; height: 205vw; border-radius: 50%; z-index: 0;
-      background: radial-gradient(circle at 50% 12%, rgba(120,180,255,0.22), rgba(120,180,255,0) 42%);
-      filter: blur(8px);
+    /* 3D Earth canvas */
+    #earthCanvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; display: block; }
+    /* CSS fallback glow behind the canvas (visible if WebGL fails) */
+    #earthFallback {
+      position:absolute; left:50%; bottom:-135vw; transform:translateX(-50%);
+      width:200vw; height:200vw; border-radius:50%; z-index:0;
+      background:radial-gradient(circle at 50% 18%, #2b6fb5 0%, #124077 30%, #0a2550 50%, #05132e 68%, #04102a 100%);
+      box-shadow: inset 0 0 120px 20px rgba(120,190,255,.35), 0 0 120px 30px rgba(90,160,255,.25);
     }
 
-    /* ---- Space station (our hotel) ---- */
-    .station { animation: float 9s ease-in-out infinite; }
-    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
-    .station-ring { transform-origin: center; animation: ring-spin 34s linear infinite; }
-    @keyframes ring-spin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
-
-    /* ---- Buttons ---- */
-    .btn-white {
-      background:#fff; color:#000; border-radius:9999px; font-weight:500; font-size:.875rem;
-      letter-spacing:.02em; padding:.9rem 2rem; transition:all .3s ease;
-    }
+    /* Buttons */
+    .btn-white { background:#fff; color:#000; border-radius:9999px; font-weight:500; font-size:.875rem; letter-spacing:.02em; padding:.9rem 2rem; transition:all .3s ease; }
     .btn-white:hover { background: rgba(255,255,255,.9); transform: translateY(-1px); }
-    .btn-ghost {
-      color:#fff; border:1px solid rgba(255,255,255,.25); border-radius:9999px;
-      padding:.9rem 2rem; font-size:.875rem; font-weight:500; transition:all .3s ease;
-    }
+    .btn-ghost { color:#fff; border:1px solid rgba(255,255,255,.25); border-radius:9999px; padding:.9rem 2rem; font-size:.875rem; font-weight:500; transition:all .3s ease; }
     .btn-ghost:hover { background: rgba(255,255,255,.08); }
 
-    /* reveal on scroll */
     .reveal { opacity:0; transform: translateY(28px); transition: opacity .9s ease, transform .9s cubic-bezier(.22,1,.36,1); }
     .reveal.in { opacity:1; transform: translateY(0); }
 
-    /* mobile menu */
     #mobileMenu { transition: transform .5s cubic-bezier(.22,1,.36,1); transform: translateX(100%); }
     #mobileMenu.open { transform: translateX(0); }
-
     .hamburger span { transition: all .4s cubic-bezier(.22,1,.36,1); }
     .hamburger.open span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
     .hamburger.open span:nth-child(2){ opacity:0; transform: scaleX(0); }
@@ -159,30 +83,31 @@
 
     .divider-glow { height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent); }
 
-    /* nav gets a subtle backdrop once scrolled */
     #nav { transition: background .4s ease, backdrop-filter .4s ease, border-color .4s ease; border-bottom:1px solid transparent; }
     #nav.scrolled { background: rgba(5,7,13,0.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom-color: rgba(255,255,255,0.06); }
 
-    /* offset anchor targets so headings don't hide under the fixed nav */
     section[id], header[id] { scroll-margin-top: 84px; }
-</style>
+
+    /* Bento */
+    .bento-bars { display:flex; align-items:flex-end; gap:5px; height:88px; }
+    .bento-bars > i { flex:1; background:linear-gradient(180deg,#7cc6ff,#3d7fd6); border-radius:3px 3px 0 0; display:block; opacity:.9; }
+    .dotrow { display:grid; grid-template-columns:repeat(20,1fr); gap:3px; }
+    .dotrow > i { height:6px; border-radius:2px; background:rgba(124,198,255,.85); display:block; }
+    .dotrow > i.off { background:rgba(255,255,255,.12); }
+  </style>
 </head>
 <body class="font-inter bg-ink text-white antialiased">
 
   <!-- ============ NAVBAR ============ -->
   <nav id="nav" class="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-5 flex items-center justify-between">
-    <a href="#hero" class="font-dancing text-white text-2xl md:text-3xl">Aurelia</a>
-
+    <a href="#hero" class="font-dancing text-white text-2xl md:text-3xl">Cosmos Vela</a>
     <div class="hidden md:flex items-center gap-10 lg:gap-12">
       <a href="#experience" class="text-white/75 hover:text-white text-sm tracking-wide transition">L'expérience</a>
       <a href="#suites" class="text-white/75 hover:text-white text-sm tracking-wide transition">Les suites</a>
       <a href="#board" class="text-white/75 hover:text-white text-sm tracking-wide transition">À bord</a>
       <a href="#faq" class="text-white/75 hover:text-white text-sm tracking-wide transition">Infos</a>
     </div>
-
     <a href="#waitlist" class="hidden md:inline-block btn-white button-glow">Rejoindre la liste</a>
-
-    <!-- hamburger -->
     <button id="hamburger" class="hamburger md:hidden relative w-8 h-6 flex flex-col justify-between z-50" aria-label="Menu">
       <span class="block h-[2px] w-full bg-white rounded"></span>
       <span class="block h-[2px] w-full bg-white rounded"></span>
@@ -190,7 +115,6 @@
     </button>
   </nav>
 
-  <!-- mobile menu -->
   <div id="mobileMenu" class="fixed top-0 right-0 h-full w-[85%] max-w-[340px] z-40 bg-[#05070d]/95 backdrop-blur-xl border-l border-white/10 flex flex-col justify-center px-9 gap-7">
     <a href="#experience" class="menu-link text-white/85 text-2xl font-instrument">L'expérience</a>
     <a href="#suites" class="menu-link text-white/85 text-2xl font-instrument">Les suites</a>
@@ -201,60 +125,21 @@
 
   <!-- ============ HERO ============ -->
   <header id="hero" class="relative h-screen w-full overflow-hidden">
-    <!-- starfields -->
     <div id="stars"></div>
     <div id="stars2"></div>
+    <div id="earthFallback"></div>
+    <canvas id="earthCanvas"></canvas>
 
-    <!-- earth -->
-    <div class="earth-halo"></div>
-    <div class="earth-wrap">
-      <div class="earth">
-        <div class="earth-surface"></div>
-        <div class="earth-clouds"></div>
-        <div class="earth-night"></div>
-        <div id="cityLights"></div>
-      </div>
-      <div class="earth-atmos"></div>
-    </div>
+    <!-- top vignette for legibility -->
+    <div class="absolute inset-0 z-10 pointer-events-none" style="background:linear-gradient(180deg, rgba(5,7,13,0.85) 0%, rgba(5,7,13,0.30) 24%, rgba(5,7,13,0) 46%);"></div>
 
-    <!-- space station -->
-    <div class="station absolute z-10 top-[12%] right-[6%] md:top-[13%] md:right-[8%] w-[120px] md:w-[190px] opacity-90 pointer-events-none">
-      <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full drop-shadow-[0_0_25px_rgba(140,190,255,0.35)]">
-        <!-- solar panels -->
-        <g stroke="rgba(150,200,255,0.5)" stroke-width="1.4">
-          <rect x="12" y="104" width="46" height="30" rx="2" fill="rgba(60,110,180,0.35)"/>
-          <line x1="24" y1="104" x2="24" y2="134"/><line x1="36" y1="104" x2="36" y2="134"/><line x1="47" y1="104" x2="47" y2="134"/>
-          <rect x="182" y="104" width="46" height="30" rx="2" fill="rgba(60,110,180,0.35)"/>
-          <line x1="194" y1="104" x2="194" y2="134"/><line x1="206" y1="104" x2="206" y2="134"/><line x1="217" y1="104" x2="217" y2="134"/>
-        </g>
-        <line x1="58" y1="119" x2="86" y2="119" stroke="rgba(200,220,255,0.6)" stroke-width="3"/>
-        <line x1="154" y1="119" x2="182" y2="119" stroke="rgba(200,220,255,0.6)" stroke-width="3"/>
-        <!-- rotating habitat ring -->
-        <g class="station-ring">
-          <circle cx="120" cy="119" r="52" stroke="rgba(210,230,255,0.85)" stroke-width="7" fill="none"/>
-          <circle cx="120" cy="67" r="4" fill="#ffd9a0"/>
-          <circle cx="120" cy="171" r="4" fill="#ffd9a0"/>
-          <circle cx="68" cy="119" r="4" fill="#ffd9a0"/>
-          <circle cx="172" cy="119" r="4" fill="#ffd9a0"/>
-        </g>
-        <!-- central hub -->
-        <circle cx="120" cy="119" r="20" fill="#0b1a33" stroke="rgba(220,235,255,0.9)" stroke-width="3"/>
-        <circle cx="120" cy="119" r="8" fill="rgba(140,200,255,0.9)"/>
-        <rect x="116" y="40" width="8" height="20" rx="2" fill="rgba(210,230,255,0.8)"/>
-      </svg>
-    </div>
-
-    <!-- overlay for legibility -->
-    <div class="absolute inset-0 z-10 pointer-events-none" style="background:linear-gradient(180deg, rgba(5,7,13,0.85) 0%, rgba(5,7,13,0.35) 22%, rgba(5,7,13,0) 45%);"></div>
-
-    <!-- hero content -->
     <div class="absolute inset-0 z-20 flex flex-col items-center justify-center px-6 -mt-24 md:-mt-28 text-center">
       <p class="uppercase tracking-[0.35em] text-[11px] md:text-xs text-white/60 mb-6">Ouverture · Avril 2027</p>
       <h1 class="font-instrument text-white text-[40px] leading-[0.95] md:text-7xl lg:text-[104px] tracking-tight text-glow max-w-5xl">
         Passez la nuit<br class="hidden sm:block" /> <span class="italic">au-dessus du monde.</span>
       </h1>
       <p class="text-white/70 text-sm md:text-lg mt-6 md:mt-8 max-w-xl">
-        AURELIA est le premier hôtel de luxe en orbite. Des suites panoramiques à 400 km d'altitude, seize levers de soleil par jour, et un silence que la Terre ne connaît pas.
+        Cosmos Vela est le premier hôtel de luxe en orbite. Des suites panoramiques à 400 km d'altitude, seize levers de soleil par jour, et un silence que la Terre ne connaît pas.
       </p>
       <div class="flex flex-col sm:flex-row items-center gap-4 mt-9">
         <a href="#waitlist" class="btn-white button-glow">Rejoindre la liste d'attente</a>
@@ -262,8 +147,7 @@
       </div>
     </div>
 
-    <!-- countdown -->
-    <div class="absolute bottom-8 left-0 right-0 z-20 flex justify-center">
+    <div class="absolute bottom-8 left-0 right-0 z-20 flex justify-center px-4">
       <div class="liquid-glass rounded-2xl px-5 py-3 md:px-8 md:py-4 flex items-center gap-4 md:gap-8">
         <span class="text-[10px] md:text-xs uppercase tracking-[0.25em] text-white/55 hidden sm:block">T‑moins</span>
         <div class="flex items-center gap-3 md:gap-6" id="countdown">
@@ -277,39 +161,47 @@
     </div>
   </header>
 
-  <!-- ============ MANIFESTO / QUOTE (parallax) ============ -->
+  <!-- ============ MANIFESTO / QUOTE ============ -->
   <section id="manifesto" class="relative h-screen w-full overflow-hidden flex items-center justify-center"
            style="background:linear-gradient(180deg,#010A17 0%,#0A2E4E 35%,#20658E 68%,#4d90b5 100%);">
-    <!-- soft nebula clouds -->
     <div class="parallax-cloud absolute left-[-10%] bottom-[8%] w-[420px] md:w-[620px] opacity-40 hidden sm:block" data-speed="0.06">
       <div class="w-full aspect-[2/1] rounded-full" style="background:radial-gradient(circle,rgba(255,255,255,.55),transparent 62%);filter:blur(20px);"></div>
     </div>
     <div class="parallax-cloud absolute right-[-12%] bottom-[16%] w-[460px] md:w-[680px] opacity-40 hidden sm:block" data-speed="0.1">
       <div class="w-full aspect-[2/1] rounded-full" style="background:radial-gradient(circle,rgba(255,255,255,.5),transparent 62%);filter:blur(22px);"></div>
     </div>
-    <!-- sun glow at top -->
     <div class="absolute top-[-14%] left-1/2 -translate-x-1/2 w-[70vw] h-[40vw] rounded-full" style="background:radial-gradient(circle,rgba(255,220,170,.55),transparent 60%);filter:blur(30px);"></div>
 
     <div class="relative z-10 max-w-4xl px-8 text-center">
       <p class="font-instrument text-white text-xl sm:text-2xl md:text-4xl lg:text-[42px] leading-[1.45] md:leading-[1.5]">
-        « Nous avons imaginé AURELIA pour ceux qui ont déjà tout vu — sauf la Terre depuis le silence. Chaque suite est une fenêtre sur la planète, chaque nuit un privilège que seuls quelques centaines d'humains ont connu. Ici, le luxe n'est pas l'excès : c'est la perspective. »
+        « Nous avons imaginé Cosmos Vela pour ceux qui ont déjà tout vu — sauf la Terre depuis le silence. Chaque suite est une fenêtre sur la planète, chaque nuit un privilège que seuls quelques centaines d'humains ont connu. Ici, le luxe n'est pas l'excès : c'est la perspective. »
       </p>
       <p class="mt-7 md:mt-9 text-white/85 text-sm md:text-base tracking-wide">Elara Voss — Fondatrice & Directrice de l'expérience</p>
     </div>
   </section>
 
-  <!-- ============ EXPERIENCE / PRODUCT PRESENTATION ============ -->
+  <!-- ============ EXPERIENCE ============ -->
   <section id="experience" class="relative py-24 md:py-36 px-6 md:px-12 max-w-6xl mx-auto">
     <div class="reveal text-center max-w-3xl mx-auto">
-      <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5">L'expérience AURELIA</p>
+      <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5">L'expérience Cosmos Vela</p>
       <h2 class="font-instrument text-4xl md:text-6xl leading-tight">Un hôtel. <span class="italic text-white/70">Une orbite.</span> Aucune comparaison.</h2>
       <p class="text-white/60 mt-6 md:text-lg leading-relaxed">
-        Amarrée à 400 kilomètres d'altitude, la station AURELIA accueille 32 voyageurs pour des séjours de 3 à 12 nuits.
+        Amarrée à 400 kilomètres d'altitude, la station Cosmos Vela accueille 32 voyageurs pour des séjours de 3 à 12 nuits.
         Un vaisseau vous y conduit en quelques heures ; le reste appartient à l'apesanteur, aux baies vitrées panoramiques et à un service pensé au millimètre.
       </p>
     </div>
 
-    <div class="grid md:grid-cols-3 gap-6 mt-16">
+    <!-- feature image band -->
+    <div class="reveal mt-14 rounded-3xl overflow-hidden relative border border-white/10">
+      <img src="assets/hotel-station.jpg" alt="Vue de la station Cosmos Vela en orbite" class="w-full h-[280px] md:h-[440px] object-cover" loading="lazy" />
+      <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(5,7,13,0) 40%,rgba(5,7,13,.85) 100%);"></div>
+      <div class="absolute bottom-0 left-0 p-6 md:p-10">
+        <p class="text-white/60 text-xs uppercase tracking-[0.25em] mb-2">La station</p>
+        <h3 class="font-instrument text-2xl md:text-4xl">Une architecture pensée pour l'apesanteur</h3>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6 mt-12">
       <div class="reveal liquid-glass rounded-3xl p-8">
         <div class="text-4xl font-instrument mb-2">400<span class="text-lg align-top">km</span></div>
         <p class="text-white/55 text-sm">d'altitude, en orbite terrestre basse — l'endroit d'où la Terre paraît à la fois immense et fragile.</p>
@@ -325,48 +217,91 @@
     </div>
   </section>
 
-  <!-- ============ BENEFITS / FEATURES ============ -->
+  <!-- ============ À BORD — BENTO ============ -->
   <section id="board" class="relative py-20 md:py-28 px-6 md:px-12 max-w-6xl mx-auto">
-    <div class="reveal text-center max-w-2xl mx-auto mb-16">
+    <div class="reveal text-center max-w-2xl mx-auto mb-14">
       <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5">À bord</p>
       <h2 class="font-instrument text-4xl md:text-5xl">Tout a été repensé pour l'apesanteur</h2>
     </div>
 
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <div class="reveal liquid-glass rounded-3xl p-7">
-        <i data-lucide="globe" class="w-7 h-7 text-sky-300 mb-4"></i>
-        <h3 class="text-lg font-medium mb-2">Baie panoramique privée</h3>
-        <p class="text-white/55 text-sm leading-relaxed">Chaque suite dispose d'une fenêtre de 2 mètres orientée vers la Terre. Votre vue change toutes les secondes.</p>
+    <div class="grid md:grid-cols-3 gap-5 auto-rows-[minmax(0,1fr)]">
+      <!-- A : big KPI + chart (span 2) -->
+      <div class="reveal liquid-glass rounded-3xl p-8 md:col-span-2 flex flex-col">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.25em] text-sky-300/80 mb-2 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-sky-400 inline-block animate-pulse"></span> En orbite · temps réel</p>
+            <div class="text-4xl md:text-5xl font-instrument">27 500 <span class="text-xl align-top text-white/60">km/h</span></div>
+            <p class="text-white/50 text-sm mt-1">vitesse de croisière — une orbite complète toutes les 90 minutes.</p>
+          </div>
+          <div class="text-right hidden sm:block">
+            <div class="text-2xl font-instrument">400 km</div>
+            <p class="text-white/45 text-xs">altitude stabilisée</p>
+          </div>
+        </div>
+        <div class="bento-bars mt-8">
+          <i style="height:42%"></i><i style="height:60%"></i><i style="height:38%"></i><i style="height:72%"></i>
+          <i style="height:55%"></i><i style="height:83%"></i><i style="height:48%"></i><i style="height:66%"></i>
+          <i style="height:40%"></i><i style="height:74%"></i><i style="height:58%"></i><i style="height:90%"></i>
+          <i style="height:52%"></i><i style="height:68%"></i>
+        </div>
+        <div class="mt-6">
+          <h3 class="text-lg font-medium">Une mécanique de précision</h3>
+          <p class="text-white/55 text-sm mt-1">Chaque paramètre de vol est supervisé en continu : altitude, cap, arrimage. Vous n'avez qu'à regarder défiler la Terre.</p>
+        </div>
       </div>
-      <div class="reveal liquid-glass rounded-3xl p-7">
-        <i data-lucide="sparkles" class="w-7 h-7 text-sky-300 mb-4"></i>
-        <h3 class="text-lg font-medium mb-2">Spa en apesanteur</h3>
-        <p class="text-white/55 text-sm leading-relaxed">Bulles d'eau flottantes, soins zéro-gravité et méditation en lévitation, encadrés par nos spécialistes.</p>
+
+      <!-- B : systems health (span 1) -->
+      <div class="reveal liquid-glass rounded-3xl p-8 flex flex-col">
+        <div class="text-3xl font-instrument">99,99 %</div>
+        <p class="text-white/50 text-sm mt-1">disponibilité des systèmes vitaux, redondance triple à bord.</p>
+        <div class="mt-6 space-y-4">
+          <p class="text-[10px] uppercase tracking-[0.2em] text-white/40 flex items-center justify-between">Systèmes de bord <span class="text-sky-300 normal-case tracking-normal">● 100% opérationnels</span></p>
+          <div>
+            <p class="text-xs text-white/60 mb-1.5">Support-vie</p>
+            <div class="dotrow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div>
+            <p class="text-xs text-white/60 mb-1.5">Navigation</p>
+            <div class="dotrow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="off"></i><i class="off"></i></div>
+          </div>
+          <div>
+            <p class="text-xs text-white/60 mb-1.5">Amarrage</p>
+            <div class="dotrow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="off"></i><i class="off"></i><i class="off"></i><i class="off"></i><i class="off"></i></div>
+          </div>
+        </div>
+        <h3 class="text-lg font-medium mt-6">Sécurité certifiée</h3>
       </div>
-      <div class="reveal liquid-glass rounded-3xl p-7">
-        <i data-lucide="utensils" class="w-7 h-7 text-sky-300 mb-4"></i>
-        <h3 class="text-lg font-medium mb-2">Gastronomie orbitale</h3>
-        <p class="text-white/55 text-sm leading-relaxed">Un menu signé par un chef étoilé, repensé pour l'apesanteur. Dîner face au lever de soleil, seize fois par jour.</p>
+
+      <!-- C : image card small (span 1) -->
+      <div class="reveal rounded-3xl overflow-hidden relative border border-white/10 min-h-[300px] group">
+        <img src="assets/cupola-view.jpg" alt="Vue de la Terre depuis la coupole" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+        <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(5,7,13,.1) 30%,rgba(5,7,13,.9) 100%);"></div>
+        <div class="absolute bottom-0 p-7">
+          <i data-lucide="telescope" class="w-6 h-6 text-sky-300 mb-3"></i>
+          <h3 class="text-lg font-medium">La coupole d'observation</h3>
+          <p class="text-white/60 text-sm mt-1">7 mètres de verre pour contempler la Terre et les aurores sans filtre.</p>
+        </div>
       </div>
-      <div class="reveal liquid-glass rounded-3xl p-7">
-        <i data-lucide="moon-star" class="w-7 h-7 text-sky-300 mb-4"></i>
-        <h3 class="text-lg font-medium mb-2">Sorties sous la coupole</h3>
-        <p class="text-white/55 text-sm leading-relaxed">La coupole d'observation : 7 mètres de verre pour contempler les aurores et la Voie lactée sans filtre.</p>
-      </div>
-      <div class="reveal liquid-glass rounded-3xl p-7">
-        <i data-lucide="shield-check" class="w-7 h-7 text-sky-300 mb-4"></i>
-        <h3 class="text-lg font-medium mb-2">Sécurité certifiée</h3>
-        <p class="text-white/55 text-sm leading-relaxed">Formation pré-vol de 5 jours, équipage certifié agence spatiale, protocoles médicaux à bord 24 h/24.</p>
-      </div>
-      <div class="reveal liquid-glass rounded-3xl p-7">
-        <i data-lucide="wifi" class="w-7 h-7 text-sky-300 mb-4"></i>
-        <h3 class="text-lg font-medium mb-2">Connecté à la Terre</h3>
-        <p class="text-white/55 text-sm leading-relaxed">Liaison ultra haut-débit pour partager votre orbite en direct — ou simplement débrancher, enfin.</p>
+
+      <!-- D : image card wide (span 2) -->
+      <div class="reveal rounded-3xl overflow-hidden relative border border-white/10 md:col-span-2 min-h-[300px] group">
+        <img src="assets/corridor.jpg" alt="Intérieur de la station Cosmos Vela" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+        <div class="absolute inset-0" style="background:linear-gradient(90deg,rgba(5,7,13,.92) 0%,rgba(5,7,13,.4) 60%,rgba(5,7,13,.2) 100%);"></div>
+        <div class="absolute inset-0 flex flex-col justify-center p-7 md:p-10 max-w-md">
+          <p class="text-[11px] uppercase tracking-[0.25em] text-sky-300/80 mb-3">Bien-être orbital</p>
+          <h3 class="font-instrument text-2xl md:text-3xl">Spa en apesanteur & gastronomie signée</h3>
+          <p class="text-white/60 text-sm mt-3">Soins zéro-gravité, bulles d'eau flottantes, et un menu repensé par un chef étoilé — servi face au lever de soleil, seize fois par jour.</p>
+          <div class="flex gap-8 mt-6">
+            <div><div class="text-2xl font-instrument">8</div><p class="text-white/45 text-xs">baies panoramiques</p></div>
+            <div><div class="text-2xl font-instrument">11</div><p class="text-white/45 text-xs">membres d'équipage</p></div>
+            <div><div class="text-2xl font-instrument">0 g</div><p class="text-white/45 text-xs">de pesanteur</p></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ SUITES / TIERS ============ -->
+  <!-- ============ SUITES ============ -->
   <section id="suites" class="relative py-20 md:py-28 px-6 md:px-12 max-w-6xl mx-auto">
     <div class="reveal text-center max-w-2xl mx-auto mb-16">
       <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5">Les suites</p>
@@ -375,7 +310,6 @@
     </div>
 
     <div class="grid md:grid-cols-3 gap-6">
-      <!-- tier 1 -->
       <div class="reveal liquid-glass rounded-3xl p-8 flex flex-col">
         <h3 class="font-instrument text-2xl">Orbita</h3>
         <p class="text-white/50 text-sm mt-1">Séjour découverte · 3 nuits</p>
@@ -387,7 +321,6 @@
         </ul>
         <a href="#waitlist" class="btn-ghost text-center mt-8">Rejoindre la liste</a>
       </div>
-      <!-- tier 2 (highlight) -->
       <div class="reveal rounded-3xl p-8 flex flex-col relative overflow-hidden"
            style="background:linear-gradient(180deg,rgba(120,180,255,0.16),rgba(120,180,255,0.04));border:1px solid rgba(160,205,255,0.35);">
         <span class="absolute top-5 right-5 text-[10px] uppercase tracking-widest text-sky-200 border border-sky-200/40 rounded-full px-3 py-1">Le plus choisi</span>
@@ -402,7 +335,6 @@
         </ul>
         <a href="#waitlist" class="btn-white text-center mt-8 button-glow">Rejoindre la liste</a>
       </div>
-      <!-- tier 3 -->
       <div class="reveal liquid-glass rounded-3xl p-8 flex flex-col">
         <h3 class="font-instrument text-2xl">Zenith</h3>
         <p class="text-white/50 text-sm mt-1">Séjour privatisé · 12 nuits</p>
@@ -417,33 +349,17 @@
     </div>
   </section>
 
-  <!-- ============ HOW IT WORKS / INFO ============ -->
+  <!-- ============ HOW IT WORKS ============ -->
   <section id="how" class="relative py-20 md:py-28 px-6 md:px-12 max-w-5xl mx-auto">
     <div class="reveal text-center max-w-2xl mx-auto mb-16">
       <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5">Le voyage</p>
       <h2 class="font-instrument text-4xl md:text-5xl">De la réservation à l'orbite</h2>
     </div>
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="reveal">
-        <div class="text-sky-300 text-sm font-medium mb-3">Étape 01</div>
-        <h3 class="font-instrument text-xl mb-2">Réservation</h3>
-        <p class="text-white/55 text-sm">Vous rejoignez la liste, nous fixons ensemble vos dates de départ et votre suite.</p>
-      </div>
-      <div class="reveal">
-        <div class="text-sky-300 text-sm font-medium mb-3">Étape 02</div>
-        <h3 class="font-instrument text-xl mb-2">Préparation</h3>
-        <p class="text-white/55 text-sm">5 jours de formation en centre spatial : santé, apesanteur, sécurité. Tout est pris en charge.</p>
-      </div>
-      <div class="reveal">
-        <div class="text-sky-300 text-sm font-medium mb-3">Étape 03</div>
-        <h3 class="font-instrument text-xl mb-2">Départ</h3>
-        <p class="text-white/55 text-sm">Décollage et arrimage à AURELIA en quelques heures. Bienvenue à bord.</p>
-      </div>
-      <div class="reveal">
-        <div class="text-sky-300 text-sm font-medium mb-3">Étape 04</div>
-        <h3 class="font-instrument text-xl mb-2">Votre séjour</h3>
-        <p class="text-white/55 text-sm">3 à 12 nuits au-dessus du monde, puis un retour en douceur — transformé.</p>
-      </div>
+      <div class="reveal"><div class="text-sky-300 text-sm font-medium mb-3">Étape 01</div><h3 class="font-instrument text-xl mb-2">Réservation</h3><p class="text-white/55 text-sm">Vous rejoignez la liste, nous fixons ensemble vos dates de départ et votre suite.</p></div>
+      <div class="reveal"><div class="text-sky-300 text-sm font-medium mb-3">Étape 02</div><h3 class="font-instrument text-xl mb-2">Préparation</h3><p class="text-white/55 text-sm">5 jours de formation en centre spatial : santé, apesanteur, sécurité. Tout est pris en charge.</p></div>
+      <div class="reveal"><div class="text-sky-300 text-sm font-medium mb-3">Étape 03</div><h3 class="font-instrument text-xl mb-2">Départ</h3><p class="text-white/55 text-sm">Décollage et arrimage à Cosmos Vela en quelques heures. Bienvenue à bord.</p></div>
+      <div class="reveal"><div class="text-sky-300 text-sm font-medium mb-3">Étape 04</div><h3 class="font-instrument text-xl mb-2">Votre séjour</h3><p class="text-white/55 text-sm">3 à 12 nuits au-dessus du monde, puis un retour en douceur — transformé.</p></div>
     </div>
   </section>
 
@@ -452,31 +368,19 @@
     <h2 class="reveal font-instrument text-3xl md:text-4xl text-center mb-12">Questions fréquentes</h2>
     <div class="space-y-3" id="faqList">
       <div class="reveal liquid-glass rounded-2xl overflow-hidden">
-        <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5">
-          <span class="text-white/90">Faut-il être astronaute ou sportif de haut niveau ?</span>
-          <i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i>
-        </button>
+        <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90">Faut-il être astronaute ou sportif de haut niveau ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
         <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-sm"><p class="pb-5">Non. Une condition physique normale suffit. Notre formation de 5 jours et un bilan médical préparent chaque voyageur, quel que soit son âge (18 à 75 ans).</p></div>
       </div>
       <div class="reveal liquid-glass rounded-2xl overflow-hidden">
-        <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5">
-          <span class="text-white/90">Combien de temps dure un séjour ?</span>
-          <i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i>
-        </button>
+        <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90">Combien de temps dure un séjour ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
         <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-sm"><p class="pb-5">De 3 à 12 nuits selon la formule choisie, formation pré-vol non comprise. Le trajet aller-retour ajoute environ une journée.</p></div>
       </div>
       <div class="reveal liquid-glass rounded-2xl overflow-hidden">
-        <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5">
-          <span class="text-white/90">Que comprend le prix ?</span>
-          <i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i>
-        </button>
+        <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90">Que comprend le prix ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
         <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-sm"><p class="pb-5">Formation, vol aller-retour, hébergement, pension complète, soins spa et accompagnement personnalisé. Il ne reste plus qu'à lever les yeux.</p></div>
       </div>
       <div class="reveal liquid-glass rounded-2xl overflow-hidden">
-        <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5">
-          <span class="text-white/90">Rejoindre la liste m'engage-t-il ?</span>
-          <i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i>
-        </button>
+        <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90">Rejoindre la liste m'engage-t-il ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
         <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-sm"><p class="pb-5">Aucun engagement. La liste d'attente vous donne un accès prioritaire aux premiers départs 2027 et à nos annonces. Vous restez libre à chaque étape.</p></div>
       </div>
     </div>
@@ -484,17 +388,18 @@
 
   <!-- ============ FINAL CTA / WAITLIST ============ -->
   <section id="waitlist" class="relative py-24 md:py-32 px-6 overflow-hidden">
-    <div class="absolute inset-0 -z-10" style="background:radial-gradient(ellipse at 50% 0%,rgba(120,180,255,0.18),transparent 60%);"></div>
+    <div class="absolute inset-0 -z-10">
+      <img src="assets/earth-night.jpg" alt="La Terre de nuit vue de l'espace" class="w-full h-full object-cover opacity-30" loading="lazy" />
+      <div class="absolute inset-0" style="background:radial-gradient(ellipse at 50% 40%,rgba(5,7,13,.5),rgba(5,7,13,.92) 70%);"></div>
+    </div>
     <div class="reveal max-w-2xl mx-auto text-center">
-      <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5">Places limitées · Départs 2027</p>
+      <p class="uppercase tracking-[0.3em] text-[11px] text-white/50 mb-5">Places limitées · Départs 2027</p>
       <h2 class="font-instrument text-4xl md:text-6xl leading-tight">Réservez votre <span class="italic">place dans le ciel.</span></h2>
-      <p class="text-white/60 mt-6 md:text-lg">
+      <p class="text-white/65 mt-6 md:text-lg">
         Les premiers séjours sont réservés aux membres de la liste d'attente. Laissez votre email : nous vous contactons dès l'ouverture des réservations.
       </p>
-
       <form id="waitlistForm" class="mt-10 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-        <input type="email" required placeholder="votre@email.com"
-               class="flex-1 liquid-glass rounded-full px-6 py-4 text-sm text-white placeholder-white/40 outline-none focus:border-white/30" />
+        <input type="email" required placeholder="votre@email.com" class="flex-1 liquid-glass rounded-full px-6 py-4 text-sm text-white placeholder-white/40 outline-none focus:border-white/30" />
         <button type="submit" class="btn-white button-glow whitespace-nowrap">Rejoindre</button>
       </form>
       <p id="formMsg" class="text-sky-300 text-sm mt-4 h-5 transition-opacity opacity-0">Merci ! Vous êtes sur la liste — à très bientôt en orbite. ✦</p>
@@ -507,7 +412,7 @@
     <div class="max-w-6xl mx-auto">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div>
-          <a href="#hero" class="font-dancing text-3xl">Aurelia</a>
+          <a href="#hero" class="font-dancing text-3xl">Cosmos Vela</a>
           <p class="text-white/50 text-sm mt-3 max-w-xs">Le premier hôtel de luxe en orbite. Départs prévus à partir d'avril 2027.</p>
         </div>
         <div class="flex gap-8 text-sm">
@@ -520,7 +425,7 @@
           <div class="flex flex-col gap-2">
             <span class="text-white/40 uppercase text-[11px] tracking-widest mb-1">Contact</span>
             <a href="#waitlist" class="text-white/65 hover:text-white transition">Liste d'attente</a>
-            <span class="text-white/65">hello@aurelia.space</span>
+            <span class="text-white/65">hello@cosmosvela.space</span>
           </div>
         </div>
       </div>
@@ -531,137 +436,180 @@
         <p class="font-instrument text-lg italic text-white/85">« No Code is the New Future »</p>
         <p class="text-white/50">Projet réalisé par <span class="text-white/80">Théo GILLARD · Eliot BOYER · Anis BENKHEROUF</span></p>
       </div>
-      <p class="text-white/35 text-xs mt-6 max-w-3xl">
+      <p class="text-white/35 text-xs mt-6 max-w-3xl leading-relaxed">
         EM Normandie — M2 ALT Digital Innovation & Transformation · Challenge No-Code, semaine 1.
-        AURELIA est un concept fictif créé dans un cadre pédagogique. Visuels (Terre, station, illustrations) générés en CSS/SVG par l'équipe.
+        Cosmos Vela est un concept fictif créé dans un cadre pédagogique.
         Landing page conçue avec l'aide de l'IA générative <span class="text-white/55">Claude (Anthropic)</span> pour le design et le code — contenus vérifiés et retravaillés par l'équipe.
+        Textures de la Terre : <span class="text-white/55">Solar System Scope (CC BY 4.0)</span>. Photographies d'illustration : <span class="text-white/55">Unsplash (licence Unsplash)</span>.
       </p>
-      <p class="text-white/30 text-xs mt-4">© 2026 AURELIA (concept étudiant). Tous droits réservés.</p>
+      <p class="text-white/30 text-xs mt-4">© 2026 Cosmos Vela (concept étudiant). Tous droits réservés.</p>
     </div>
   </footer>
 
   <!-- ============ SCRIPTS ============ -->
   <script>
-    // ---- Lucide icons ----
     lucide.createIcons();
 
-    // ---- Starfield ----
+    // Starfield
     function makeStars(id, count, maxSize) {
-      const c = document.getElementById(id);
-      const frag = document.createDocumentFragment();
-      for (let i = 0; i < count; i++) {
-        const s = document.createElement('div');
-        s.className = 'star';
-        const size = Math.random() * maxSize + 0.4;
-        s.style.width = size + 'px';
-        s.style.height = size + 'px';
-        s.style.left = Math.random() * 100 + '%';
-        s.style.top = Math.random() * 100 + '%';
-        s.style.setProperty('--dur', (Math.random() * 4 + 2) + 's');
-        s.style.animationDelay = Math.random() * 4 + 's';
-        frag.appendChild(s);
-      }
+      const c = document.getElementById(id); const frag = document.createDocumentFragment();
+      for (let i=0;i<count;i++){ const s=document.createElement('div'); s.className='star';
+        const size=Math.random()*maxSize+0.4; s.style.width=size+'px'; s.style.height=size+'px';
+        s.style.left=Math.random()*100+'%'; s.style.top=Math.random()*100+'%';
+        s.style.setProperty('--dur',(Math.random()*4+2)+'s'); s.style.animationDelay=Math.random()*4+'s'; frag.appendChild(s); }
       c.appendChild(frag);
     }
-    makeStars('stars', 140, 1.6);
-    makeStars('stars2', 60, 2.4);
+    makeStars('stars',140,1.6); makeStars('stars2',60,2.4);
 
-    // ---- City lights on Earth night side ----
-    (function cityLights() {
-      const c = document.getElementById('cityLights');
-      const frag = document.createDocumentFragment();
-      for (let i = 0; i < 70; i++) {
-        const d = document.createElement('div');
-        // keep them near the top arc, biased to the right (night side)
-        const left = 50 + (Math.random() * 46 - 8);
-        const top = 6 + Math.random() * 16;
-        d.style.cssText = `position:absolute;left:${left}%;top:${top}%;width:${Math.random()*1.6+0.6}px;height:${Math.random()*1.6+0.6}px;border-radius:50%;background:#ffce8a;opacity:${Math.random()*0.7+0.2};box-shadow:0 0 4px #ffce8a;`;
-        frag.appendChild(d);
-      }
-      c.appendChild(frag);
+    // Countdown
+    (function(){
+      const target=new Date('2027-04-12T13:00:00Z').getTime();
+      const el={days:document.querySelector('[data-cd="days"]'),hours:document.querySelector('[data-cd="hours"]'),mins:document.querySelector('[data-cd="mins"]'),secs:document.querySelector('[data-cd="secs"]')};
+      const pad=n=>String(n).padStart(2,'0');
+      function tick(){const diff=Math.max(0,target-Date.now());
+        el.days.textContent=Math.floor(diff/86400000);
+        el.hours.textContent=pad(Math.floor((diff%86400000)/3600000));
+        el.mins.textContent=pad(Math.floor((diff%3600000)/60000));
+        el.secs.textContent=pad(Math.floor((diff%60000)/1000));}
+      tick(); setInterval(tick,1000);
     })();
 
-    // ---- Countdown ----
-    (function countdown() {
-      const target = new Date('2027-04-12T13:00:00Z').getTime();
-      const el = {
-        days: document.querySelector('[data-cd="days"]'),
-        hours: document.querySelector('[data-cd="hours"]'),
-        mins: document.querySelector('[data-cd="mins"]'),
-        secs: document.querySelector('[data-cd="secs"]'),
-      };
-      function pad(n){ return String(n).padStart(2,'0'); }
-      function tick() {
-        const diff = Math.max(0, target - Date.now());
-        const d = Math.floor(diff / 86400000);
-        const h = Math.floor((diff % 86400000) / 3600000);
-        const m = Math.floor((diff % 3600000) / 60000);
-        const s = Math.floor((diff % 60000) / 1000);
-        el.days.textContent = d;
-        el.hours.textContent = pad(h);
-        el.mins.textContent = pad(m);
-        el.secs.textContent = pad(s);
-      }
-      tick(); setInterval(tick, 1000);
-    })();
+    // Mobile menu
+    const hamburger=document.getElementById('hamburger'), mobileMenu=document.getElementById('mobileMenu');
+    function toggleMenu(force){const open=force!==undefined?force:!mobileMenu.classList.contains('open');mobileMenu.classList.toggle('open',open);hamburger.classList.toggle('open',open);}
+    hamburger.addEventListener('click',()=>toggleMenu());
+    document.querySelectorAll('.menu-link').forEach(l=>l.addEventListener('click',()=>toggleMenu(false)));
 
-    // ---- Mobile menu ----
-    const hamburger = document.getElementById('hamburger');
-    const mobileMenu = document.getElementById('mobileMenu');
-    function toggleMenu(force) {
-      const open = force !== undefined ? force : !mobileMenu.classList.contains('open');
-      mobileMenu.classList.toggle('open', open);
-      hamburger.classList.toggle('open', open);
+    // Reveal on scroll
+    const io=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0.12});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+    // Parallax clouds + nav backdrop
+    const clouds=document.querySelectorAll('.parallax-cloud'), manifesto=document.getElementById('manifesto'), nav=document.getElementById('nav');
+    function onScroll(){
+      const rect=manifesto.getBoundingClientRect();
+      const progress=Math.min(1,Math.max(0,(window.innerHeight-rect.top)/(window.innerHeight+rect.height)));
+      clouds.forEach(cl=>{const speed=parseFloat(cl.dataset.speed);cl.style.transform=`translateY(${(0.5-progress)*260*speed/0.1}px)`;});
+      nav.classList.toggle('scrolled',window.scrollY>40);
     }
-    hamburger.addEventListener('click', () => toggleMenu());
-    document.querySelectorAll('.menu-link').forEach(l => l.addEventListener('click', () => toggleMenu(false)));
+    window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
 
-    // ---- Reveal on scroll ----
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-    }, { threshold: 0.15 });
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-    // ---- Parallax clouds in manifesto ----
-    const clouds = document.querySelectorAll('.parallax-cloud');
-    const manifesto = document.getElementById('manifesto');
-    function onScroll() {
-      const rect = manifesto.getBoundingClientRect();
-      const progress = Math.min(1, Math.max(0, (window.innerHeight - rect.top) / (window.innerHeight + rect.height)));
-      clouds.forEach(cl => {
-        const speed = parseFloat(cl.dataset.speed);
-        cl.style.transform = `translateY(${(0.5 - progress) * 260 * speed / 0.1}px)`;
-      });
-    }
-    // ---- Nav backdrop on scroll ----
-    const nav = document.getElementById('nav');
-    function onScrollNav() { nav.classList.toggle('scrolled', window.scrollY > 40); }
-    window.addEventListener('scroll', () => { onScroll(); onScrollNav(); }, { passive: true });
-    onScroll(); onScrollNav();
-
-    // ---- FAQ accordion ----
-    document.querySelectorAll('.faq-q').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const ans = btn.nextElementSibling;
-        const icon = btn.querySelector('[data-lucide], svg');
-        const isOpen = ans.style.maxHeight && ans.style.maxHeight !== '0px';
-        // close others
-        document.querySelectorAll('.faq-a').forEach(a => { a.style.maxHeight = '0px'; });
-        document.querySelectorAll('.faq-q svg').forEach(i => i.style.transform = 'rotate(0deg)');
-        if (!isOpen) {
-          ans.style.maxHeight = ans.scrollHeight + 'px';
-          if (icon) icon.style.transform = 'rotate(45deg)';
-        }
+    // FAQ accordion
+    document.querySelectorAll('.faq-q').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const ans=btn.nextElementSibling, icon=btn.querySelector('svg');
+        const isOpen=ans.style.maxHeight && ans.style.maxHeight!=='0px';
+        document.querySelectorAll('.faq-a').forEach(a=>a.style.maxHeight='0px');
+        document.querySelectorAll('.faq-q svg').forEach(i=>i.style.transform='rotate(0deg)');
+        if(!isOpen){ans.style.maxHeight=ans.scrollHeight+'px'; if(icon) icon.style.transform='rotate(45deg)';}
       });
     });
 
-    // ---- Waitlist form (demo only, no data sent) ----
-    document.getElementById('waitlistForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const msg = document.getElementById('formMsg');
-      msg.style.opacity = '1';
-      e.target.reset();
-    });
+    // Waitlist (demo only)
+    document.getElementById('waitlistForm').addEventListener('submit',e=>{e.preventDefault();document.getElementById('formMsg').style.opacity='1';e.target.reset();});
+  </script>
+
+  <!-- ============ 3D EARTH (Three.js) ============ -->
+  <script type="module">
+    import * as THREE from 'three';
+    try {
+      THREE.ColorManagement.enabled = false;
+      const canvas = document.getElementById('earthCanvas');
+      const hero = document.getElementById('hero');
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+      camera.position.set(0, 0, 9);
+      camera.lookAt(0, 0, 0);
+
+      // ---- Earth group, pushed below the viewport so we see the top limb ----
+      const group = new THREE.Group();
+      group.position.y = -5.15;   // lower = more of the planet peeks in at the bottom
+      scene.add(group);
+
+      const R = 4.6;
+      const loader = new THREE.TextureLoader();
+      const dayTex = loader.load('assets/earth_day.jpg');
+      const nightTex = loader.load('assets/earth_night.jpg');
+      const cloudTex = loader.load('assets/earth_clouds.jpg');
+      [dayTex, nightTex, cloudTex].forEach(t => { t.anisotropy = 4; });
+
+      const sunDirection = new THREE.Vector3(-0.55, 0.35, 0.75).normalize();
+
+      // Day/Night shader
+      const earthMat = new THREE.ShaderMaterial({
+        uniforms: { dayTexture:{value:dayTex}, nightTexture:{value:nightTex}, sunDirection:{value:sunDirection} },
+        vertexShader: `
+          varying vec2 vUv; varying vec3 vNormalW;
+          void main(){ vUv = uv; vNormalW = normalize(mat3(modelMatrix) * normal);
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+        fragmentShader: `
+          uniform sampler2D dayTexture; uniform sampler2D nightTexture; uniform vec3 sunDirection;
+          varying vec2 vUv; varying vec3 vNormalW;
+          void main(){
+            vec3 day = texture2D(dayTexture, vUv).rgb;
+            vec3 night = texture2D(nightTexture, vUv).rgb;
+            float c = dot(normalize(vNormalW), normalize(sunDirection));
+            float m = smoothstep(-0.18, 0.30, c);
+            vec3 col = mix(night * 1.35, day, m);
+            gl_FragColor = vec4(col, 1.0);
+          }`,
+      });
+      const earth = new THREE.Mesh(new THREE.SphereGeometry(R, 96, 96), earthMat);
+      earth.rotation.z = 0.32; // axial tilt for a natural look
+      group.add(earth);
+
+      // Clouds
+      const cloudsMat = new THREE.MeshBasicMaterial({ map: cloudTex, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending, depthWrite: false });
+      const cloudsMesh = new THREE.Mesh(new THREE.SphereGeometry(R * 1.006, 64, 64), cloudsMat);
+      cloudsMesh.rotation.z = 0.32;
+      group.add(cloudsMesh);
+
+      // Atmosphere glow (fresnel, back side, additive)
+      const atmoMat = new THREE.ShaderMaterial({
+        uniforms: { glowColor:{value:new THREE.Color(0x5aa6ff)}, sunDirection:{value:sunDirection} },
+        vertexShader: `
+          varying vec3 vNormalW; varying vec3 vPosW;
+          void main(){ vNormalW = normalize(mat3(modelMatrix) * normal);
+            vPosW = (modelMatrix * vec4(position,1.0)).xyz;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+        fragmentShader: `
+          uniform vec3 glowColor; uniform vec3 sunDirection;
+          varying vec3 vNormalW; varying vec3 vPosW;
+          void main(){
+            vec3 viewDir = normalize(cameraPosition - vPosW);
+            float rim = pow(1.0 - abs(dot(vNormalW, viewDir)), 3.2);
+            float dayside = smoothstep(-0.35, 0.5, dot(normalize(vNormalW), normalize(sunDirection)));
+            gl_FragColor = vec4(glowColor, rim * (0.35 + 0.65 * dayside));
+          }`,
+        side: THREE.BackSide, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false,
+      });
+      const atmo = new THREE.Mesh(new THREE.SphereGeometry(R * 1.14, 64, 64), atmoMat);
+      group.add(atmo);
+
+      function resize(){
+        const w = hero.clientWidth, h = hero.clientHeight;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h; camera.updateProjectionMatrix();
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      function animate(){
+        requestAnimationFrame(animate);
+        if(!reduce){ earth.rotation.y += 0.00042; cloudsMesh.rotation.y += 0.00055; }
+        renderer.render(scene, camera);
+      }
+      animate();
+      // textures loaded -> hide the CSS fallback
+      let loaded = 0; const onload = () => { if(++loaded>=1){ const f=document.getElementById('earthFallback'); if(f) f.style.opacity='0'; } };
+      dayTex.image ? onload() : (dayTex.onUpdate = onload);
+    } catch (err) {
+      console.warn('WebGL Earth indisponible, fallback CSS actif.', err);
+    }
   </script>
 </body>
 </html>

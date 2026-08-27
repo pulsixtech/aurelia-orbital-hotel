@@ -22,10 +22,12 @@ Landing page réalisée dans le cadre du **Challenge No-Code (semaine 1)** — E
 Théo GILLARD · Eliot BOYER · Anis BENKHEROUF
 
 ## Déclaration IA
-Landing page conçue avec l'aide de l'IA générative **Claude (Anthropic)** pour le design et le code. Les contenus ont été vérifiés et retravaillés par l'équipe.
+- **Claude (Anthropic)** — design et code de la landing page, ainsi que la rédaction des prompts d'images. Contenus vérifiés et retravaillés par l'équipe.
+- **Nano Banana (Google Gemini)** — génération des 7 visuels d'intérieur des suites, à partir de prompts rédigés par l'équipe.
 
 ## Sources & licences des ressources externes
-- **Photographies d'illustration** (`assets/hero.jpg`, `station-arch.jpg`, `cupola-view.jpg`, `corridor.jpg`, `earth-night.jpg`) : [Unsplash](https://unsplash.com/) — licence Unsplash (usage libre).
+- **Visuels des suites générés par IA** (`assets/suite-orbita*.jpg`, `suite-cupola*.jpg`, `suite-zenith*.jpg`) : images générées avec Nano Banana (Google Gemini) — créations originales de l'équipe.
+- **Photographies d'illustration** (`assets/hero.jpg`, `station-arch.jpg`, `cupola-view.jpg`, `corridor.jpg`, `corridor-blue.jpg`, `lounge.jpg`, `earth-night.jpg`) : [Unsplash](https://unsplash.com/) — licence Unsplash (usage libre).
 - (Les fichiers `assets/earth_*.jpg` — textures Solar System Scope, CC BY 4.0 — servaient au globe 3D d'une version précédente et ne sont plus utilisés.)
 
 ---

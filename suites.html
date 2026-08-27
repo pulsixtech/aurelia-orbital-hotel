@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Les suites — Vélocity</title>
+  <meta name="description" content="Les trois suites de Vélocity, le premier hôtel de luxe en orbite : Orbita, Cupola et Zenith. Baies panoramiques, spa en apesanteur, service sur-mesure." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: {
+      fontFamily: { display:['Orbitron','sans-serif'], body:['Rajdhani','sans-serif'] },
+      colors: { ink: '#05070d' },
+    } } };
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Rajdhani',sans-serif; background:#05070d; color:#fff; overflow-x:hidden; }
+    .font-display { font-family:'Orbitron',sans-serif; letter-spacing:-.01em; }
+    .font-body { font-family:'Rajdhani',sans-serif; }
+
+    .liquid-glass { background:rgba(255,255,255,.02); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.08); box-shadow:inset 0 1px 1px rgba(255,255,255,.10); }
+    .text-glow { text-shadow:0 0 40px rgba(180,215,255,.35), 0 0 90px rgba(120,180,255,.18); }
+    .button-glow { box-shadow:0 0 22px rgba(255,255,255,.25), 0 0 46px rgba(255,255,255,.08); }
+
+    .btn-white { background:#fff; color:#000; border-radius:9999px; font-weight:600; font-size:.95rem; letter-spacing:.08em; text-transform:uppercase; padding:.85rem 2rem; transition:all .3s ease; display:inline-block; }
+    .btn-white:hover { background:rgba(255,255,255,.9); transform:translateY(-1px); }
+    .btn-ghost { color:#fff; border:1px solid rgba(255,255,255,.25); border-radius:9999px; padding:.85rem 2rem; font-size:.95rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; transition:all .3s ease; display:inline-block; }
+    .btn-ghost:hover { background:rgba(255,255,255,.08); }
+
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity .9s ease, transform .9s cubic-bezier(.22,1,.36,1); }
+    .reveal.in { opacity:1; transform:translateY(0); }
+
+    #mobileMenu { transition:transform .5s cubic-bezier(.22,1,.36,1); transform:translateX(100%); }
+    #mobileMenu.open { transform:translateX(0); }
+    .hamburger span { transition:all .4s cubic-bezier(.22,1,.36,1); }
+    .hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2){ opacity:0; transform:scaleX(0); }
+    .hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+    .divider-glow { height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent); }
+
+    #nav { transition:background .4s ease, backdrop-filter .4s ease, border-color .4s ease; border-bottom:1px solid transparent; }
+    #nav.scrolled { background:rgba(5,7,13,.72); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-bottom-color:rgba(255,255,255,.06); }
+    .nav-link { text-transform:uppercase; letter-spacing:.12em; font-weight:500; }
+    .logo { font-family:'Orbitron',sans-serif; font-weight:800; letter-spacing:.22em; text-transform:uppercase; }
+
+    /* Aurora */
+    .aurora { position:absolute; left:0; right:0; top:0; height:70%; z-index:1; pointer-events:none; overflow:hidden; opacity:.85; }
+    .aurora::before, .aurora::after {
+      content:''; position:absolute; left:-25%; right:-25%; top:-45%; height:150%;
+      background:
+        radial-gradient(38% 55% at 18% 42%, rgba(46,230,170,.55), transparent 70%),
+        radial-gradient(42% 52% at 50% 30%, rgba(56,189,248,.50), transparent 70%),
+        radial-gradient(40% 58% at 82% 46%, rgba(139,92,246,.50), transparent 70%);
+      filter:blur(64px); mix-blend-mode:screen; animation:auroraDrift 17s ease-in-out infinite alternate;
+    }
+    .aurora::after { animation-duration:23s; animation-direction:alternate-reverse; opacity:.65; }
+    @keyframes auroraDrift { 0%{transform:translate(-6%,-4%) scale(1.05) rotate(-2deg);} 100%{transform:translate(8%,3%) scale(1.18) rotate(3deg);} }
+
+    .suite-main { transition: opacity .4s ease; }
+    .suite-thumb { cursor:pointer; transition: border-color .3s ease, transform .3s ease; }
+    .suite-thumb:hover { transform: translateY(-2px); }
+    .suite-thumb.active { border-color: rgba(160,205,255,.7) !important; }
+  </style>
+</head>
+<body class="bg-ink text-white antialiased">
+
+  <!-- ============ NAVBAR ============ -->
+  <nav id="nav" class="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-5 flex items-center justify-between">
+    <a href="index.html" class="logo text-white text-lg md:text-xl">Vélocity</a>
+    <div class="hidden md:flex items-center gap-10 lg:gap-12">
+      <a href="index.html#experience" class="nav-link text-white/75 hover:text-white text-xs transition">L'expérience</a>
+      <a href="suites.html" class="nav-link text-white text-xs transition">Les suites</a>
+      <a href="index.html#board" class="nav-link text-white/75 hover:text-white text-xs transition">À bord</a>
+      <a href="index.html#faq" class="nav-link text-white/75 hover:text-white text-xs transition">Infos</a>
+    </div>
+    <a href="index.html#waitlist" class="hidden md:inline-block btn-white button-glow">Rejoindre</a>
+    <button id="hamburger" class="hamburger md:hidden relative w-8 h-6 flex flex-col justify-between z-50" aria-label="Menu">
+      <span class="block h-[2px] w-full bg-white rounded"></span>
+      <span class="block h-[2px] w-full bg-white rounded"></span>
+      <span class="block h-[2px] w-full bg-white rounded"></span>
+    </button>
+  </nav>
+
+  <div id="mobileMenu" class="fixed top-0 right-0 h-full w-[85%] max-w-[340px] z-40 bg-[#05070d]/95 backdrop-blur-xl border-l border-white/10 flex flex-col justify-center px-9 gap-7">
+    <a href="index.html#experience" class="menu-link nav-link text-white/85 text-xl">L'expérience</a>
+    <a href="suites.html" class="menu-link nav-link text-white/85 text-xl">Les suites</a>
+    <a href="index.html#board" class="menu-link nav-link text-white/85 text-xl">À bord</a>
+    <a href="index.html#faq" class="menu-link nav-link text-white/85 text-xl">Infos</a>
+    <a href="index.html#waitlist" class="menu-link btn-white text-center mt-4">Rejoindre</a>
+  </div>
+
+  <!-- ============ PAGE HERO ============ -->
+  <header class="relative h-[62vh] min-h-[440px] w-full overflow-hidden flex items-center justify-center">
+    <img src="assets/station-arch.jpg" alt="La station Vélocity en orbite" class="absolute inset-0 w-full h-full object-cover z-0" />
+    <div class="aurora"></div>
+    <div class="absolute inset-0 z-10" style="background:linear-gradient(180deg, rgba(5,7,13,.82) 0%, rgba(5,7,13,.4) 45%, rgba(5,7,13,.75) 80%, #05070d 100%);"></div>
+    <div class="relative z-20 text-center px-6 mt-10">
+      <p class="uppercase tracking-[0.4em] text-[11px] md:text-xs text-sky-300/70 mb-6 font-body font-semibold">Vélocity · Hébergement en orbite</p>
+      <h1 class="font-display font-semibold text-white text-[30px] md:text-6xl lg:text-7xl tracking-tight text-glow">Les suites</h1>
+      <p class="text-white/80 text-lg md:text-xl mt-6 max-w-2xl mx-auto font-body">
+        Trois façons d'habiter l'orbite — de la première nuit au-dessus du monde au module entièrement privatisé. Une seule constante : la Terre, pour horizon.
+      </p>
+    </div>
+  </header>
+
+  <!-- ============ QUICK COMPARE ============ -->
+  <section class="relative max-w-6xl mx-auto px-6 md:px-12 -mt-10 md:-mt-14 z-30">
+    <div class="grid sm:grid-cols-3 gap-4">
+      <a href="#orbita" class="reveal liquid-glass rounded-2xl p-6 hover:border-white/25 transition">
+        <div class="font-display text-xl font-semibold">Orbita</div>
+        <p class="text-white/50 text-sm font-body uppercase tracking-wider mt-1">3 nuits · 18 m²</p>
+        <p class="text-2xl font-display font-bold mt-3">1,2 M€</p>
+      </a>
+      <a href="#cupola" class="reveal rounded-2xl p-6 transition" style="background:linear-gradient(180deg,rgba(120,180,255,.16),rgba(120,180,255,.04));border:1px solid rgba(160,205,255,.35);">
+        <div class="font-display text-xl font-semibold flex items-center gap-2">Cupola <span class="text-[9px] uppercase tracking-widest text-sky-200 border border-sky-200/40 rounded-full px-2 py-0.5 font-body">Populaire</span></div>
+        <p class="text-white/60 text-sm font-body uppercase tracking-wider mt-1">7 nuits · 34 m²</p>
+        <p class="text-2xl font-display font-bold mt-3">2,8 M€</p>
+      </a>
+      <a href="#zenith" class="reveal liquid-glass rounded-2xl p-6 hover:border-white/25 transition">
+        <div class="font-display text-xl font-semibold">Zenith</div>
+        <p class="text-white/50 text-sm font-body uppercase tracking-wider mt-1">12 nuits · 60 m²</p>
+        <p class="text-2xl font-display font-bold mt-3">Sur devis</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ SUITE 1 — ORBITA ============ -->
+  <section id="orbita" class="relative max-w-6xl mx-auto px-6 md:px-12 py-20 md:py-28">
+    <div class="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+      <div class="reveal" data-suite>
+        <div class="rounded-3xl overflow-hidden border border-white/10 aspect-[4/3]">
+          <img class="suite-main w-full h-full object-cover" src="assets/suite-orbita.jpg" alt="Suite Orbita" />
+        </div>
+        <div class="grid grid-cols-3 gap-3 mt-3">
+          <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb active aspect-video"><img src="assets/suite-orbita.jpg" data-full="assets/suite-orbita.jpg" alt="Suite Orbita" class="w-full h-full object-cover"></div>
+          <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb aspect-video"><img src="assets/cupola-view.jpg" data-full="assets/cupola-view.jpg" alt="Vue coupole" class="w-full h-full object-cover"></div>
+          <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb aspect-video"><img src="assets/corridor-blue.jpg" data-full="assets/corridor-blue.jpg" alt="Coursive de la station" class="w-full h-full object-cover"></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <p class="uppercase tracking-[0.3em] text-[11px] text-sky-300/70 mb-3 font-body font-semibold">Séjour découverte · 3 nuits</p>
+        <h2 class="font-display text-3xl md:text-5xl font-semibold">Orbita</h2>
+        <p class="text-white/70 text-lg md:text-xl mt-4 font-body">Votre première nuit au-dessus du monde. Une suite intime avec hublot privé, pensée pour vivre l'apesanteur sans rien sacrifier au confort.</p>
+        <div class="flex items-baseline gap-2 mt-6">
+          <span class="text-4xl font-display font-bold">1,2 M€</span><span class="text-white/45 font-body">/ personne · tout compris</span>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mt-8 font-body">
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="bed-double" class="w-5 h-5 text-sky-300"></i> Lit queen en apesanteur</div>
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="panel-top" class="w-5 h-5 text-sky-300"></i> Hublot panoramique privé</div>
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="waves" class="w-5 h-5 text-sky-300"></i> Accès coupole & spa</div>
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="wifi" class="w-5 h-5 text-sky-300"></i> Wi-Fi orbital ultra haut-débit</div>
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="utensils" class="w-5 h-5 text-sky-300"></i> Pension gastronomique</div>
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="graduation-cap" class="w-5 h-5 text-sky-300"></i> Formation pré-vol incluse</div>
+        </div>
+        <div class="flex flex-wrap gap-x-6 gap-y-2 mt-8 text-sm text-white/45 font-body uppercase tracking-wider">
+          <span>18 m²</span><span>·</span><span>1 voyageur</span><span>·</span><span>3 nuits</span>
+        </div>
+        <a href="index.html#waitlist" class="btn-white button-glow mt-8">Rejoindre la liste</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="max-w-6xl mx-auto px-6 md:px-12"><div class="divider-glow"></div></div>
+
+  <!-- ============ SUITE 2 — CUPOLA ============ -->
+  <section id="cupola" class="relative max-w-6xl mx-auto px-6 md:px-12 py-20 md:py-28">
+    <div class="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+      <div class="reveal lg:order-2">
+        <div class="rounded-3xl overflow-hidden border border-white/10 aspect-[4/3] relative">
+          <img class="suite-main w-full h-full object-cover" src="assets/suite-cupola.jpg" alt="Suite Cupola" />
+          <span class="absolute top-4 left-4 text-[10px] uppercase tracking-widest text-sky-200 border border-sky-200/50 bg-black/30 backdrop-blur rounded-full px-3 py-1 font-body font-semibold">Le plus choisi</span>
+        </div>
+        <div class="grid grid-cols-3 gap-3 mt-3">
+          <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb active aspect-video"><img src="assets/suite-cupola.jpg" data-full="assets/suite-cupola.jpg" alt="Suite Cupola" class="w-full h-full object-cover"></div>
+          <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb aspect-video"><img src="assets/cupola-view.jpg" data-full="assets/cupola-view.jpg" alt="Coupole d'observation" class="w-full h-full object-cover"></div>
+          <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb aspect-video"><img src="assets/lounge.jpg" data-full="assets/lounge.jpg" alt="Salon privé" class="w-full h-full object-cover"></div>
+        </div>
+      </div>
+      <div class="reveal lg:order-1">
+        <p class="uppercase tracking-[0.3em] text-[11px] text-sky-300/70 mb-3 font-body font-semibold">Séjour signature · 7 nuits</p>
+        <h2 class="font-display text-3xl md:text-5xl font-semibold">Cupola</h2>
+        <p class="text-white/70 text-lg md:text-xl mt-4 font-body">Une baie panoramique de deux mètres, un salon privé et la Terre qui défile à vos pieds. Notre séjour signature — celui que choisissent neuf voyageurs sur dix.</p>
+        <div class="flex items-baseline gap-2 mt-6">
+          <span class="text-4xl font-display font-bold">2,8 M€</span><span class="text-white/45 font-body">/ personne · tout compris</span>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mt-8 font-body">
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="panel-top-open" class="w-5 h-5 text-sky-300"></i> Baie panoramique 2 m</div>
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="bed-double" class="w-5 h-5 text-sky-300"></i> Lit king & salon privé</div>
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="utensils" class="w-5 h-5 text-sky-300"></i> Dîner privé sous la coupole</div>
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="sparkles" class="w-5 h-5 text-sky-300"></i> Spa zéro-gravité dédié</div>
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="camera" class="w-5 h-5 text-sky-300"></i> Portrait orbital signé</div>
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="concierge-bell" class="w-5 h-5 text-sky-300"></i> Majordome sur demande</div>
+        </div>
+        <div class="flex flex-wrap gap-x-6 gap-y-2 mt-8 text-sm text-white/45 font-body uppercase tracking-wider">
+          <span>34 m²</span><span>·</span><span>2 voyageurs</span><span>·</span><span>7 nuits</span>
+        </div>
+        <a href="index.html#waitlist" class="btn-white button-glow mt-8">Rejoindre la liste</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="max-w-6xl mx-auto px-6 md:px-12"><div class="divider-glow"></div></div>
+
+  <!-- ============ SUITE 3 — ZENITH ============ -->
+  <section id="zenith" class="relative max-w-6xl mx-auto px-6 md:px-12 py-20 md:py-28">
+    <div class="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+      <div class="reveal" data-suite>
+        <div class="rounded-3xl overflow-hidden border border-white/10 aspect-[4/3]">
+          <img class="suite-main w-full h-full object-cover" src="assets/suite-zenith.jpg" alt="Suite Zenith" />
+        </div>
+        <div class="grid grid-cols-3 gap-3 mt-3">
+          <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb active aspect-video"><img src="assets/suite-zenith.jpg" data-full="assets/suite-zenith.jpg" alt="Suite Zenith" class="w-full h-full object-cover"></div>
+          <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb aspect-video"><img src="assets/lounge.jpg" data-full="assets/lounge.jpg" alt="Salon privatif" class="w-full h-full object-cover"></div>
+          <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb aspect-video"><img src="assets/hero.jpg" data-full="assets/hero.jpg" alt="Sortie extravéhiculaire" class="w-full h-full object-cover"></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <p class="uppercase tracking-[0.3em] text-[11px] text-sky-300/70 mb-3 font-body font-semibold">Séjour privatisé · 12 nuits</p>
+        <h2 class="font-display text-3xl md:text-5xl font-semibold">Zenith</h2>
+        <p class="text-white/70 text-lg md:text-xl mt-4 font-body">Un module entier de la station, rien que le vôtre. Majordome et chef dédiés, coupole privative et une sortie extravéhiculaire encadrée — l'expérience la plus rare qui soit.</p>
+        <div class="flex items-baseline gap-2 mt-6">
+          <span class="text-4xl font-display font-bold">Sur devis</span>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mt-8 font-body">
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="door-open" class="w-5 h-5 text-sky-300"></i> Module privatisé 2 pers.</div>
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="concierge-bell" class="w-5 h-5 text-sky-300"></i> Majordome & chef dédiés</div>
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="rocket" class="w-5 h-5 text-sky-300"></i> Sortie extravéhiculaire</div>
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="telescope" class="w-5 h-5 text-sky-300"></i> Coupole privative</div>
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="wine" class="w-5 h-5 text-sky-300"></i> Cave & cellier orbital</div>
+          <div class="flex items-center gap-2 text-white/75"><i data-lucide="clock" class="w-5 h-5 text-sky-300"></i> Conciergerie 24/7</div>
+        </div>
+        <div class="flex flex-wrap gap-x-6 gap-y-2 mt-8 text-sm text-white/45 font-body uppercase tracking-wider">
+          <span>60 m²</span><span>·</span><span>2 voyageurs</span><span>·</span><span>12 nuits</span>
+        </div>
+        <a href="index.html#waitlist" class="btn-ghost mt-8">Nous contacter</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA BAND ============ -->
+  <section class="relative py-24 md:py-28 px-6 overflow-hidden border-t border-white/10">
+    <div class="absolute inset-0 -z-10">
+      <img src="assets/earth-night.jpg" alt="La Terre de nuit" class="w-full h-full object-cover opacity-25" loading="lazy" />
+      <div class="absolute inset-0" style="background:radial-gradient(ellipse at 50% 40%, rgba(5,7,13,.5), rgba(5,7,13,.92) 70%);"></div>
+    </div>
+    <div class="reveal max-w-2xl mx-auto text-center">
+      <h2 class="font-display text-3xl md:text-5xl font-semibold leading-tight">Une suite vous attend en orbite.</h2>
+      <p class="text-white/70 mt-6 text-lg md:text-xl font-body">Les premiers séjours 2027 sont réservés aux membres de la liste d'attente. Rejoignez-la et choisissez votre place dans le ciel.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mt-9">
+        <a href="index.html#waitlist" class="btn-white button-glow">Rejoindre la liste</a>
+        <a href="index.html" class="btn-ghost">Retour à l'accueil</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="relative border-t border-white/10 pt-14 pb-10 px-6 md:px-12">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div>
+          <a href="index.html" class="logo text-2xl">Vélocity</a>
+          <p class="text-white/50 text-base mt-3 max-w-xs font-body">Le premier hôtel de luxe en orbite. Départs prévus à partir d'avril 2027.</p>
+        </div>
+        <div class="flex gap-8 text-base font-body">
+          <div class="flex flex-col gap-2">
+            <span class="text-white/40 uppercase text-[11px] tracking-widest mb-1 font-semibold">Explorer</span>
+            <a href="index.html#experience" class="text-white/65 hover:text-white transition">L'expérience</a>
+            <a href="suites.html" class="text-white/65 hover:text-white transition">Les suites</a>
+            <a href="index.html#faq" class="text-white/65 hover:text-white transition">Infos</a>
+          </div>
+          <div class="flex flex-col gap-2">
+            <span class="text-white/40 uppercase text-[11px] tracking-widest mb-1 font-semibold">Contact</span>
+            <a href="index.html#waitlist" class="text-white/65 hover:text-white transition">Liste d'attente</a>
+            <span class="text-white/65">hello@velocity.space</span>
+          </div>
+        </div>
+      </div>
+      <div class="divider-glow my-10"></div>
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <p class="font-display text-base uppercase tracking-[0.2em] text-white/85">« No Code is the New Future »</p>
+        <p class="text-white/50 font-body text-base">Projet réalisé par <span class="text-white/80">Théo GILLARD · Eliot BOYER · Anis BENKHEROUF</span></p>
+      </div>
+      <p class="text-white/35 text-sm mt-6 max-w-3xl leading-relaxed font-body">
+        EM Normandie — M2 ALT Digital Innovation & Transformation · Challenge No-Code, semaine 1.
+        Vélocity est un concept fictif créé dans un cadre pédagogique.
+        Landing page conçue avec l'aide de l'IA générative <span class="text-white/55">Claude (Anthropic)</span> pour le design et le code — contenus vérifiés et retravaillés par l'équipe.
+        Photographies d'illustration : <span class="text-white/55">Unsplash (licence Unsplash)</span>.
+      </p>
+      <p class="text-white/30 text-sm mt-4 font-body">© 2026 Vélocity (concept étudiant). Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+
+    // Mobile menu
+    const hamburger=document.getElementById('hamburger'), mobileMenu=document.getElementById('mobileMenu');
+    function toggleMenu(force){const open=force!==undefined?force:!mobileMenu.classList.contains('open');mobileMenu.classList.toggle('open',open);hamburger.classList.toggle('open',open);}
+    hamburger.addEventListener('click',()=>toggleMenu());
+    document.querySelectorAll('.menu-link').forEach(l=>l.addEventListener('click',()=>toggleMenu(false)));
+
+    // Reveal + nav backdrop
+    const revealEls=[...document.querySelectorAll('.reveal')];
+    const nav=document.getElementById('nav');
+    function onScroll(){
+      const vh=window.innerHeight||document.documentElement.clientHeight;
+      revealEls.forEach(el=>{if(el.getBoundingClientRect().top < vh*0.92) el.classList.add('in');});
+      nav.classList.toggle('scrolled',window.scrollY>40);
+    }
+    window.addEventListener('scroll',onScroll,{passive:true});
+    window.addEventListener('resize',onScroll);
+    window.addEventListener('load',onScroll);
+    onScroll();
+    setTimeout(()=>revealEls.forEach(el=>el.classList.add('in')),3500);
+
+    // Gallery: click a thumbnail to swap the main image of its suite block
+    document.querySelectorAll('section[id]').forEach(sec=>{
+      const main=sec.querySelector('.suite-main');
+      if(!main) return;
+      sec.querySelectorAll('.suite-thumb').forEach(thumb=>{
+        thumb.addEventListener('click',()=>{
+          const full=thumb.querySelector('img').getAttribute('data-full');
+          main.style.opacity='0';
+          setTimeout(()=>{ main.src=full; main.style.opacity='1'; },200);
+          sec.querySelectorAll('.suite-thumb').forEach(t=>t.classList.remove('active'));
+          thumb.classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

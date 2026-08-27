@@ -529,12 +529,12 @@
       const canvas=document.getElementById('hyperCanvas'); if(!canvas) return;
       const ctx=canvas.getContext('2d');
       const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      let w,h,cx,cy,stars=[]; const N=window.innerWidth<640?220:420; const SPEED=7;
+      let w,h,cx,cy,stars=[]; const N=window.innerWidth<640?260:520; const SPEED=9;
       function resize(){ w=canvas.width=canvas.clientWidth; h=canvas.height=canvas.clientHeight; cx=w/2; cy=h/2; }
       function reset(s,init){ s.x=(Math.random()*2-1)*w; s.y=(Math.random()*2-1)*h; s.z=init?Math.random()*w:w; s.pz=s.z; }
       function build(){ stars=[]; for(let i=0;i<N;i++){const s={};reset(s,true);stars.push(s);} }
       function frame(){
-        ctx.fillStyle='rgba(5,7,13,0.32)'; ctx.fillRect(0,0,w,h);
+        ctx.fillStyle='rgba(5,7,13,0.22)'; ctx.fillRect(0,0,w,h);
         for(const s of stars){
           s.pz=s.z; s.z-=SPEED; if(s.z<1) reset(s,false);
           const k=w*0.6;

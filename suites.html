@@ -27,6 +27,12 @@
     .font-body { font-family:'Rajdhani',sans-serif; }
 
     .liquid-glass { background:rgba(255,255,255,.02); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.08); box-shadow:inset 0 1px 1px rgba(255,255,255,.10); }
+
+    /* Spotlight au survol (aceternity card-spotlight, meme effet que le bloc "a bord" de index.html) */
+    .spot { position:relative; }
+    .spot::before { content:''; position:absolute; inset:0; border-radius:inherit; opacity:0; transition:opacity .3s; pointer-events:none;
+      background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%), rgba(124,198,255,.14), transparent 60%); }
+    .spot:hover::before { opacity:1; }
     .text-glow { text-shadow:0 0 40px rgba(180,215,255,.35), 0 0 90px rgba(120,180,255,.18); }
     .button-glow { box-shadow:0 0 22px rgba(255,255,255,.25), 0 0 46px rgba(255,255,255,.08); }
 
@@ -134,17 +140,17 @@
   <!-- ============ QUICK COMPARE ============ -->
   <section class="relative max-w-6xl mx-auto px-6 md:px-12 -mt-10 md:-mt-14 z-30">
     <div class="grid sm:grid-cols-3 gap-4">
-      <a href="#orbita" class="reveal liquid-glass rounded-2xl p-6 hover:border-white/25 transition">
+      <a href="#orbita" class="reveal liquid-glass card-spot rounded-2xl p-6 hover:border-white/25 transition">
         <div class="font-display text-xl font-semibold">Orbita</div>
         <p class="text-white/50 text-sm font-body uppercase tracking-wider mt-1">3 nuits · 18 m²</p>
         <p class="text-2xl font-display font-bold mt-3">1,2 M€</p>
       </a>
-      <a href="#cupola" class="reveal rounded-2xl p-6 transition" style="background:linear-gradient(180deg,rgba(120,180,255,.16),rgba(120,180,255,.04));border:1px solid rgba(160,205,255,.35);">
+      <a href="#cupola" class="reveal card-spot rounded-2xl p-6 transition" style="background:linear-gradient(180deg,rgba(120,180,255,.16),rgba(120,180,255,.04));border:1px solid rgba(160,205,255,.35);">
         <div class="font-display text-xl font-semibold flex items-center gap-2">Cupola <span class="text-[9px] uppercase tracking-widest text-sky-200 border border-sky-200/40 rounded-full px-2 py-0.5 font-body">Populaire</span></div>
         <p class="text-white/60 text-sm font-body uppercase tracking-wider mt-1">7 nuits · 34 m²</p>
         <p class="text-2xl font-display font-bold mt-3">2,8 M€</p>
       </a>
-      <a href="#zenith" class="reveal liquid-glass rounded-2xl p-6 hover:border-white/25 transition">
+      <a href="#zenith" class="reveal liquid-glass card-spot rounded-2xl p-6 hover:border-white/25 transition">
         <div class="font-display text-xl font-semibold">Zenith</div>
         <p class="text-white/50 text-sm font-body uppercase tracking-wider mt-1">12 nuits · 60 m²</p>
         <p class="text-2xl font-display font-bold mt-3">Sur devis</p>
@@ -161,7 +167,7 @@
         </div>
         <div class="grid grid-cols-3 gap-3 mt-3">
           <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb active aspect-video"><img src="assets/suite-orbita.jpg" data-full="assets/suite-orbita.jpg" alt="La suite Orbita et son hublot panoramique" class="w-full h-full object-cover"></div>
-          <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb aspect-video"><img src="assets/cupola-view.jpg" data-full="assets/cupola-view.jpg" alt="Vue sur la Terre depuis la coupole" class="w-full h-full object-cover"></div>
+          <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb aspect-video"><img src="assets/cupola-view.jpg?v=2" data-full="assets/cupola-view.jpg?v=2" alt="Vue sur la Terre depuis la coupole" class="w-full h-full object-cover"></div>
           <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb aspect-video"><img src="assets/suite-orbita-bath.jpg" data-full="assets/suite-orbita-bath.jpg" alt="Cabine d'eau de la suite Orbita" class="w-full h-full object-cover"></div>
         </div>
       </div>
@@ -200,7 +206,7 @@
         </div>
         <div class="grid grid-cols-3 gap-3 mt-3">
           <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb active aspect-video"><img src="assets/suite-cupola.jpg" data-full="assets/suite-cupola.jpg" alt="La suite Cupola et sa baie panoramique" class="w-full h-full object-cover"></div>
-          <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb aspect-video"><img src="assets/cupola-view.jpg" data-full="assets/cupola-view.jpg" alt="Coupole d'observation" class="w-full h-full object-cover"></div>
+          <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb aspect-video"><img src="assets/cupola-view.jpg?v=2" data-full="assets/cupola-view.jpg?v=2" alt="Coupole d'observation" class="w-full h-full object-cover"></div>
           <div class="rounded-xl overflow-hidden border-2 border-white/10 suite-thumb aspect-video"><img src="assets/suite-cupola-bath.jpg" data-full="assets/suite-cupola-bath.jpg" alt="Salle d'eau panoramique de la suite Cupola" class="w-full h-full object-cover"></div>
         </div>
       </div>
@@ -361,6 +367,12 @@
     window.addEventListener('load',onScroll);
     onScroll();
     setTimeout(()=>revealEls.forEach(el=>el.classList.add('in')),3500);
+
+    // Spotlight au survol (meme effet que le bloc "a bord" de index.html)
+    document.querySelectorAll('.card-spot').forEach(c=>{
+      c.classList.add('spot');
+      c.addEventListener('mousemove',e=>{ const r=c.getBoundingClientRect(); c.style.setProperty('--mx',(e.clientX-r.left)+'px'); c.style.setProperty('--my',(e.clientY-r.top)+'px'); });
+    });
 
     // Gallery: click a thumbnail to swap the main image of its suite block
     document.querySelectorAll('section[id]').forEach(sec=>{

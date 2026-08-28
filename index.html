@@ -75,6 +75,20 @@
       background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%), rgba(124,198,255,.14), transparent 60%); }
     .spot:hover::before { opacity:1; }
 
+    /* Crossfade d'images (carte spa/gastronomie) */
+    .crossfade { position:absolute; inset:0; }
+    .crossfade img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; animation:crossfadeCycle 11s ease-in-out infinite; transition:transform .7s ease; }
+    .crossfade img:nth-child(1){ animation-delay:0s; }
+    .crossfade img:nth-child(2){ animation-delay:-5.5s; }
+    .group:hover .crossfade img { transform:scale(1.05); }
+    @keyframes crossfadeCycle {
+      0%   { opacity:1; }
+      42%  { opacity:1; }
+      50%  { opacity:0; }
+      92%  { opacity:0; }
+      100% { opacity:1; }
+    }
+
     /* Meteors (aceternity) */
     .meteors { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
     .meteor { position:absolute; top:-10%; width:2px; height:2px; border-radius:9999px; background:#bcd8ff; box-shadow:0 0 0 1px rgba(160,200,255,.25);
@@ -82,6 +96,17 @@
     .meteor::before { content:''; position:absolute; top:50%; right:0; width:60px; height:1px; transform:translateY(-50%);
       background:linear-gradient(90deg, rgba(160,200,255,.65), transparent); }
     @keyframes meteor { 0%{transform:translate(0,0) rotate(215deg); opacity:1;} 70%{opacity:1;} 100%{transform:translate(-320px,320px) rotate(215deg); opacity:0;} }
+
+    /* Logos with blur-flip (aceternity-inspired, "trusted by") */
+    .logo-flip { display:flex; align-items:center; gap:.6rem; color:rgba(255,255,255,.55); font-family:'Rajdhani',sans-serif;
+      font-weight:600; letter-spacing:.08em; text-transform:uppercase; font-size:.9rem; white-space:nowrap;
+      transform-style:preserve-3d; animation:logoFlip 6s ease-in-out infinite; animation-delay:calc(var(--i, 0) * -0.75s); }
+    .logo-flip i { opacity:.85; stroke-width:1.5; flex-shrink:0; }
+    @keyframes logoFlip {
+      0%, 100% { transform:rotateY(0deg); filter:blur(0px); opacity:.55; }
+      50%      { transform:rotateY(90deg); filter:blur(8px); opacity:.05; }
+    }
+    @media (prefers-reduced-motion: reduce) { .logo-flip { animation:none; opacity:.55; } }
 
 
     /* ===== AURORA effect ===== */
@@ -235,24 +260,33 @@
     </div>
   </header>
 
-  <!-- ============ STATS (compteurs animés) ============ -->
-  <section id="stats" class="relative py-16 md:py-20 px-6 md:px-12 overflow-hidden bg-grid border-t border-b border-white/5">
-    <div class="absolute inset-0 -z-10" style="background:radial-gradient(ellipse at 50% 0%, rgba(56,189,248,.12), transparent 62%);"></div>
-    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10 text-center">
-      <div class="reveal"><div class="stat font-display text-4xl md:text-6xl font-bold" data-count="400" data-suffix=" km">0</div><p class="text-white/50 text-sm md:text-base font-body mt-2 uppercase tracking-wider">d'altitude</p></div>
-      <div class="reveal"><div class="stat font-display text-4xl md:text-6xl font-bold" data-count="27500" data-sep="1" data-suffix=" km/h">0</div><p class="text-white/50 text-sm md:text-base font-body mt-2 uppercase tracking-wider">vitesse orbitale</p></div>
-      <div class="reveal"><div class="stat font-display text-4xl md:text-6xl font-bold" data-count="16" data-suffix=" /jour">0</div><p class="text-white/50 text-sm md:text-base font-body mt-2 uppercase tracking-wider">levers de soleil</p></div>
-      <div class="reveal"><div class="stat font-display text-4xl md:text-6xl font-bold" data-count="92" data-suffix=" min">0</div><p class="text-white/50 text-sm md:text-base font-body mt-2 uppercase tracking-wider">par orbite</p></div>
+  <!-- ============ TRUSTED BY (logos with blur flip, aceternity) ============ -->
+  <section id="trusted" class="relative py-20 md:py-28 px-6 md:px-12 overflow-hidden bg-grid border-t border-b border-white/5">
+    <div class="absolute inset-0 -z-10" style="background:radial-gradient(ellipse at 50% 0%, rgba(56,189,248,.10), transparent 62%);"></div>
+    <div class="reveal text-center max-w-2xl mx-auto mb-14">
+      <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5 font-body font-semibold">Ils nous soutiennent</p>
+      <h2 class="font-display text-2xl md:text-4xl font-semibold">Ils font confiance à Vélocity</h2>
     </div>
+    <div class="reveal max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-x-8 gap-y-12 place-items-center" style="perspective:900px">
+      <div class="logo-flip" style="--i:0"><i data-lucide="orbit" class="w-5 h-5"></i><span>Nova Dynamics</span></div>
+      <div class="logo-flip" style="--i:1"><i data-lucide="gem" class="w-5 h-5"></i><span>Halcyon Group</span></div>
+      <div class="logo-flip" style="--i:2"><i data-lucide="triangle" class="w-5 h-5"></i><span>Axiom Capital</span></div>
+      <div class="logo-flip" style="--i:3"><i data-lucide="rocket" class="w-5 h-5"></i><span>Vantage Aero</span></div>
+      <div class="logo-flip" style="--i:4"><i data-lucide="hexagon" class="w-5 h-5"></i><span>Meridian Partners</span></div>
+      <div class="logo-flip" style="--i:5"><i data-lucide="compass" class="w-5 h-5"></i><span>Kestrel Industries</span></div>
+      <div class="logo-flip" style="--i:6"><i data-lucide="waves" class="w-5 h-5"></i><span>Lumen Ventures</span></div>
+      <div class="logo-flip" style="--i:7"><i data-lucide="shield" class="w-5 h-5"></i><span>Orbis Holdings</span></div>
+    </div>
+    <p class="reveal text-center text-white/30 text-xs mt-10 font-body">Partenaires fictifs — projet académique</p>
   </section>
 
   <!-- ============ EXPERIENCE ============ -->
-  <section id="experience" class="relative py-24 md:py-36 px-6 md:px-12 max-w-6xl mx-auto">
+  <section id="experience" class="relative py-20 md:py-28 px-6 md:px-12 max-w-6xl mx-auto">
     <div class="reveal text-center max-w-3xl mx-auto">
       <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5 font-body font-semibold">L'expérience Vélocity</p>
       <h2 class="font-display text-3xl md:text-5xl leading-tight font-semibold">Un hôtel. Une orbite. Aucune comparaison.</h2>
       <p class="text-white/60 mt-6 text-lg md:text-xl leading-relaxed font-body">
-        Amarrée à 400 kilomètres d'altitude, la station Vélocity accueille 32 voyageurs pour des séjours de 3 à 12 nuits.
+        Pensée pour les voyageurs fortunés en quête d'exclusivité absolue, les collectionneurs d'expériences rares et les passionnés d'exploration spatiale, la station Vélocity accueille 32 voyageurs pour des séjours de 3 à 12 nuits, amarrée à 400 kilomètres d'altitude.
         Un vaisseau vous y conduit en quelques heures ; le reste appartient à l'apesanteur, aux baies vitrées panoramiques et à un service pensé au millimètre.
       </p>
     </div>
@@ -267,15 +301,15 @@
     </div>
 
     <div class="grid md:grid-cols-3 gap-6 mt-12">
-      <div class="reveal liquid-glass rounded-3xl p-8">
+      <div class="reveal liquid-glass card-spot rounded-3xl p-8">
         <div class="text-4xl font-display font-bold mb-2">400<span class="text-lg align-top">km</span></div>
-        <p class="text-white/55 text-base font-body">d'altitude, en orbite terrestre basse — l'endroit d'où la Terre paraît à la fois immense et fragile.</p>
+        <p class="text-white/55 text-base font-body">d'altitude, en orbite terrestre basse, filée à 27 500 km/h — l'endroit d'où la Terre paraît à la fois immense et fragile.</p>
       </div>
-      <div class="reveal liquid-glass rounded-3xl p-8">
+      <div class="reveal liquid-glass card-spot rounded-3xl p-8">
         <div class="text-4xl font-display font-bold mb-2">16</div>
-        <p class="text-white/55 text-base font-body">levers et couchers de soleil par période de 24 heures. L'aube, toutes les 90 minutes.</p>
+        <p class="text-white/55 text-base font-body">levers et couchers de soleil par période de 24 heures. L'aube, toutes les 92 minutes — la durée d'une orbite complète.</p>
       </div>
-      <div class="reveal liquid-glass rounded-3xl p-8">
+      <div class="reveal liquid-glass card-spot rounded-3xl p-8">
         <div class="text-4xl font-display font-bold mb-2">32</div>
         <p class="text-white/55 text-base font-body">voyageurs maximum à bord. Un équipage de 11 personnes dédié à votre séjour.</p>
       </div>
@@ -290,7 +324,7 @@
     </div>
 
     <div class="grid md:grid-cols-3 gap-5 auto-rows-[minmax(0,1fr)]">
-      <div class="reveal liquid-glass rounded-3xl p-8 md:col-span-2 flex flex-col">
+      <div class="reveal liquid-glass card-spot rounded-3xl p-8 md:col-span-2 flex flex-col">
         <div class="flex items-start justify-between">
           <div>
             <p class="text-[11px] uppercase tracking-[0.25em] text-sky-300/80 mb-2 flex items-center gap-2 font-body font-semibold"><span class="w-2 h-2 rounded-full bg-sky-400 inline-block animate-pulse"></span> En orbite · temps réel</p>
@@ -314,7 +348,7 @@
         </div>
       </div>
 
-      <div class="reveal liquid-glass rounded-3xl p-8 flex flex-col">
+      <div class="reveal liquid-glass card-spot rounded-3xl p-8 flex flex-col">
         <div class="text-3xl font-display font-bold">99,99 %</div>
         <p class="text-white/50 text-base mt-1 font-body">disponibilité des systèmes vitaux, redondance triple à bord.</p>
         <div class="mt-6 space-y-4">
@@ -336,7 +370,7 @@
       </div>
 
       <div class="reveal rounded-3xl overflow-hidden relative border border-white/10 min-h-[300px] group">
-        <img src="assets/cupola-view.jpg" alt="Vue de la Terre depuis la coupole" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+        <img src="assets/cupola-view.jpg?v=2" alt="Vue de la Terre depuis la coupole" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
         <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(5,7,13,.1) 30%,rgba(5,7,13,.9) 100%);"></div>
         <div class="absolute bottom-0 p-7">
           <i data-lucide="telescope" class="w-6 h-6 text-sky-300 mb-3"></i>
@@ -346,7 +380,10 @@
       </div>
 
       <div class="reveal rounded-3xl overflow-hidden relative border border-white/10 md:col-span-2 min-h-[300px] group">
-        <img src="assets/corridor.jpg" alt="Intérieur de la station Vélocity" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+        <div class="crossfade">
+          <img src="assets/spa-restaurant-1.jpg" alt="Spa en apesanteur de la station Vélocity" loading="lazy" />
+          <img src="assets/spa-restaurant-2.jpg" alt="Restaurant panoramique de la station Vélocity" loading="lazy" />
+        </div>
         <div class="absolute inset-0" style="background:linear-gradient(90deg,rgba(5,7,13,.92) 0%,rgba(5,7,13,.4) 60%,rgba(5,7,13,.2) 100%);"></div>
         <div class="absolute inset-0 flex flex-col justify-center p-7 md:p-10 max-w-md">
           <p class="text-[11px] uppercase tracking-[0.25em] text-sky-300/80 mb-3 font-body font-semibold">Bien-être orbital</p>
@@ -372,7 +409,7 @@
     </div>
 
     <div class="grid md:grid-cols-3 gap-6">
-      <div class="reveal liquid-glass rounded-3xl p-8 flex flex-col">
+      <div class="reveal liquid-glass card-spot rounded-3xl p-8 flex flex-col">
         <h3 class="font-display text-xl font-semibold">Orbita</h3>
         <p class="text-white/50 text-sm mt-1 font-body uppercase tracking-wider">Séjour découverte · 3 nuits</p>
         <div class="my-6"><span class="text-4xl font-display font-bold">1,2 M€</span><span class="text-white/45 text-sm font-body"> / personne</span></div>
@@ -383,7 +420,7 @@
         </ul>
         <a href="#waitlist" class="btn-ghost text-center mt-8">Rejoindre</a>
       </div>
-      <div class="reveal rounded-3xl p-8 flex flex-col relative overflow-hidden"
+      <div class="reveal card-spot rounded-3xl p-8 flex flex-col relative overflow-hidden"
            style="background:linear-gradient(180deg,rgba(120,180,255,0.16),rgba(120,180,255,0.04));border:1px solid rgba(160,205,255,0.35);">
         <span class="absolute top-5 right-5 text-[10px] uppercase tracking-widest text-sky-200 border border-sky-200/40 rounded-full px-3 py-1 font-body font-semibold">Le plus choisi</span>
         <h3 class="font-display text-xl font-semibold">Cupola</h3>
@@ -397,7 +434,7 @@
         </ul>
         <a href="#waitlist" class="btn-white text-center mt-8 button-glow">Rejoindre</a>
       </div>
-      <div class="reveal liquid-glass rounded-3xl p-8 flex flex-col">
+      <div class="reveal liquid-glass card-spot rounded-3xl p-8 flex flex-col">
         <h3 class="font-display text-xl font-semibold">Zenith</h3>
         <p class="text-white/50 text-sm mt-1 font-body uppercase tracking-wider">Séjour privatisé · 12 nuits</p>
         <div class="my-6"><span class="text-4xl font-display font-bold">Sur devis</span></div>
@@ -483,7 +520,7 @@
           <h4 class="font-display text-xl md:text-2xl font-semibold mb-3">Votre séjour</h4>
           <p class="text-white/60 text-base md:text-lg font-body mb-7 max-w-xl">Seize levers de soleil par jour, un spa en apesanteur, une table signée par un chef étoilé. Puis un retour en douceur — transformé.</p>
           <div class="grid grid-cols-2 gap-3 md:gap-4">
-            <img src="assets/cupola-view.jpg" alt="Vue depuis la coupole" loading="lazy" class="rounded-xl object-cover h-28 md:h-44 lg:h-56 w-full border border-white/10" />
+            <img src="assets/cupola-view.jpg?v=2" alt="Vue depuis la coupole" loading="lazy" class="rounded-xl object-cover h-28 md:h-44 lg:h-56 w-full border border-white/10" />
             <img src="assets/suite-zenith-lounge.jpg" alt="Salon privatif" loading="lazy" class="rounded-xl object-cover h-28 md:h-44 lg:h-56 w-full border border-white/10" />
           </div>
         </div>
@@ -541,80 +578,81 @@
     <div class="meteors" id="meteors"></div>
     <div class="absolute inset-0 -z-0 pointer-events-none" style="background:radial-gradient(ellipse at 50% 20%, rgba(129,92,246,.12), transparent 60%);"></div>
     <div class="reveal text-center max-w-2xl mx-auto mb-12 px-6 relative z-10">
-      <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5 font-body font-semibold">Ils y étaient</p>
-      <h2 class="font-display text-3xl md:text-4xl font-semibold">Des retours qui ne redescendent pas</h2>
+      <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5 font-body font-semibold">Regards extérieurs</p>
+      <h2 class="font-display text-3xl md:text-4xl font-semibold">Ce qu'en disent déjà la presse et la science</h2>
     </div>
     <div class="marquee relative z-10">
       <div class="marquee-track">
-        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
-          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Je pensais avoir tout vu. Puis j'ai vu la Terre se lever — seize fois dans la journée. »</blockquote>
-          <figcaption class="mt-5 text-sm text-white/50 font-body">Clara M. — première voyageuse</figcaption>
+        <figure class="tcard liquid-glass card-spot rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Vélocity pourrait devenir la première adresse où le tourisme spatial rencontre véritablement le luxe hôtelier. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Camille Dubreuil — journaliste, La Tribune Espace</figcaption>
         </figure>
-        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
-          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Aucune suite d'hôtel sur Terre ne rivalise avec une fenêtre sur la planète entière. »</blockquote>
-          <figcaption class="mt-5 text-sm text-white/50 font-body">Léon V. — architecte</figcaption>
+        <figure class="tcard liquid-glass card-spot rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Seize levers de soleil par jour : un stimulus rare pour l'étude du rythme circadien en microgravité. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Dr. Ahmed Saleh — chercheur en physiologie spatiale</figcaption>
         </figure>
-        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
-          <blockquote class="font-body text-white/80 text-base leading-relaxed">« On redescend transformé. Ce n'est pas un voyage, c'est un basculement. »</blockquote>
-          <figcaption class="mt-5 text-sm text-white/50 font-body">Dr. A. Novak — médecin de bord</figcaption>
+        <figure class="tcard liquid-glass card-spot rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Le concept s'inscrit dans une tendance de fond : l'orbite basse devient un terrain d'expérimentation pour l'hôtellerie de demain. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Marion Petit — rédactrice tech</figcaption>
         </figure>
-        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
-          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Le silence, là-haut, vaut chaque kilomètre parcouru pour l'atteindre. »</blockquote>
-          <figcaption class="mt-5 text-sm text-white/50 font-body">Inès R. — exploratrice</figcaption>
+        <figure class="tcard liquid-glass card-spot rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« L'idée d'une coupole panoramique en orbite basse est déjà validée par la Cupola de la Station spatiale internationale. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Prof. Elena Kovacs — ingénieure aérospatiale</figcaption>
         </figure>
-        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
-          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Le spa en apesanteur : l'expérience la plus étrange et la plus douce de ma vie. »</blockquote>
-          <figcaption class="mt-5 text-sm text-white/50 font-body">Marcus T. — invité</figcaption>
+        <figure class="tcard liquid-glass card-spot rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Un séjour de ce type pourrait devenir un cas d'école pour comprendre les effets courts de l'apesanteur sur des non-professionnels. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Dr. Julien Roy — médecin aérospatial</figcaption>
         </figure>
-        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
-          <blockquote class="font-body text-white/80 text-base leading-relaxed">« J'avais réservé trois nuits. J'en aurais voulu trente. »</blockquote>
-          <figcaption class="mt-5 text-sm text-white/50 font-body">Sofia L. — invitée</figcaption>
+        <figure class="tcard liquid-glass card-spot rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Le voyage de luxe suit de près ce type d'initiative : la rareté de l'expérience en fait un actif marketing puissant. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Sophie Lambert — analyste tourisme</figcaption>
         </figure>
-        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
-          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Je pensais avoir tout vu. Puis j'ai vu la Terre se lever — seize fois dans la journée. »</blockquote>
-          <figcaption class="mt-5 text-sm text-white/50 font-body">Clara M. — première voyageuse</figcaption>
+        <figure class="tcard liquid-glass card-spot rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Vélocity pourrait devenir la première adresse où le tourisme spatial rencontre véritablement le luxe hôtelier. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Camille Dubreuil — journaliste, La Tribune Espace</figcaption>
         </figure>
-        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
-          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Aucune suite d'hôtel sur Terre ne rivalise avec une fenêtre sur la planète entière. »</blockquote>
-          <figcaption class="mt-5 text-sm text-white/50 font-body">Léon V. — architecte</figcaption>
+        <figure class="tcard liquid-glass card-spot rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Seize levers de soleil par jour : un stimulus rare pour l'étude du rythme circadien en microgravité. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Dr. Ahmed Saleh — chercheur en physiologie spatiale</figcaption>
         </figure>
-        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
-          <blockquote class="font-body text-white/80 text-base leading-relaxed">« On redescend transformé. Ce n'est pas un voyage, c'est un basculement. »</blockquote>
-          <figcaption class="mt-5 text-sm text-white/50 font-body">Dr. A. Novak — médecin de bord</figcaption>
+        <figure class="tcard liquid-glass card-spot rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Le concept s'inscrit dans une tendance de fond : l'orbite basse devient un terrain d'expérimentation pour l'hôtellerie de demain. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Marion Petit — rédactrice tech</figcaption>
         </figure>
-        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
-          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Le silence, là-haut, vaut chaque kilomètre parcouru pour l'atteindre. »</blockquote>
-          <figcaption class="mt-5 text-sm text-white/50 font-body">Inès R. — exploratrice</figcaption>
+        <figure class="tcard liquid-glass card-spot rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« L'idée d'une coupole panoramique en orbite basse est déjà validée par la Cupola de la Station spatiale internationale. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Prof. Elena Kovacs — ingénieure aérospatiale</figcaption>
         </figure>
-        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
-          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Le spa en apesanteur : l'expérience la plus étrange et la plus douce de ma vie. »</blockquote>
-          <figcaption class="mt-5 text-sm text-white/50 font-body">Marcus T. — invité</figcaption>
+        <figure class="tcard liquid-glass card-spot rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Un séjour de ce type pourrait devenir un cas d'école pour comprendre les effets courts de l'apesanteur sur des non-professionnels. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Dr. Julien Roy — médecin aérospatial</figcaption>
         </figure>
-        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
-          <blockquote class="font-body text-white/80 text-base leading-relaxed">« J'avais réservé trois nuits. J'en aurais voulu trente. »</blockquote>
-          <figcaption class="mt-5 text-sm text-white/50 font-body">Sofia L. — invitée</figcaption>
+        <figure class="tcard liquid-glass card-spot rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Le voyage de luxe suit de près ce type d'initiative : la rareté de l'expérience en fait un actif marketing puissant. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Sophie Lambert — analyste tourisme</figcaption>
         </figure>
       </div>
     </div>
+    <p class="reveal text-center text-white/30 text-xs mt-8 px-6 relative z-10 font-body">Citations illustratives — projet académique, aucun séjour n'a encore eu lieu.</p>
   </section>
 
   <!-- ============ FAQ ============ -->
-  <section id="faq" class="relative py-16 md:py-24 px-6 md:px-12 max-w-3xl mx-auto">
+  <section id="faq" class="relative py-20 md:py-28 px-6 md:px-12 max-w-3xl mx-auto">
     <h2 class="reveal font-display text-2xl md:text-4xl text-center mb-12 font-semibold">Questions fréquentes</h2>
     <div class="space-y-3" id="faqList">
-      <div class="reveal liquid-glass rounded-2xl overflow-hidden">
+      <div class="reveal liquid-glass card-spot rounded-2xl overflow-hidden">
         <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90 text-lg font-body font-medium">Faut-il être astronaute ou sportif de haut niveau ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
         <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-base font-body"><p class="pb-5">Non. Une condition physique normale suffit. Notre formation de 5 jours et un bilan médical préparent chaque voyageur, quel que soit son âge (18 à 75 ans).</p></div>
       </div>
-      <div class="reveal liquid-glass rounded-2xl overflow-hidden">
+      <div class="reveal liquid-glass card-spot rounded-2xl overflow-hidden">
         <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90 text-lg font-body font-medium">Combien de temps dure un séjour ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
         <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-base font-body"><p class="pb-5">De 3 à 12 nuits selon la formule choisie, formation pré-vol non comprise. Le trajet aller-retour ajoute environ une journée.</p></div>
       </div>
-      <div class="reveal liquid-glass rounded-2xl overflow-hidden">
+      <div class="reveal liquid-glass card-spot rounded-2xl overflow-hidden">
         <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90 text-lg font-body font-medium">Que comprend le prix ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
         <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-base font-body"><p class="pb-5">Formation, vol aller-retour, hébergement, pension complète, soins spa et accompagnement personnalisé. Il ne reste plus qu'à lever les yeux.</p></div>
       </div>
-      <div class="reveal liquid-glass rounded-2xl overflow-hidden">
+      <div class="reveal liquid-glass card-spot rounded-2xl overflow-hidden">
         <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90 text-lg font-body font-medium">Rejoindre la liste m'engage-t-il ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
         <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-base font-body"><p class="pb-5">Aucun engagement. La liste d'attente vous donne un accès prioritaire aux premiers départs 2027 et à nos annonces. Vous restez libre à chaque étape.</p></div>
       </div>
@@ -622,7 +660,7 @@
   </section>
 
   <!-- ============ FINAL CTA / WAITLIST — HYPERSPACE ============ -->
-  <section id="waitlist" class="relative py-24 md:py-32 px-6 overflow-hidden">
+  <section id="waitlist" class="relative py-20 md:py-28 px-6 overflow-hidden">
     <canvas id="hyperCanvas" class="absolute inset-0 w-full h-full -z-10"></canvas>
     <div class="absolute inset-0 -z-10" style="background:radial-gradient(ellipse at 50% 45%, rgba(5,7,13,.35) 20%, rgba(5,7,13,.85) 70%, #05070d 100%);"></div>
     <div class="reveal max-w-2xl mx-auto text-center">
@@ -791,8 +829,8 @@
       window.addEventListener('scroll',check,{passive:true}); window.addEventListener('load',check); check();
     })();
 
-    // ===== Spotlight au survol (cartes bento) =====
-    document.querySelectorAll('#board .liquid-glass').forEach(c=>{
+    // ===== Spotlight au survol (toutes les cartes du site) =====
+    document.querySelectorAll('.card-spot').forEach(c=>{
       c.classList.add('spot');
       c.addEventListener('mousemove',e=>{ const r=c.getBoundingClientRect(); c.style.setProperty('--mx',(e.clientX-r.left)+'px'); c.style.setProperty('--my',(e.clientY-r.top)+'px'); });
     });

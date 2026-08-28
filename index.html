@@ -47,9 +47,42 @@
     .text-glow { text-shadow: 0 0 40px rgba(180,215,255,0.35), 0 0 90px rgba(120,180,255,0.18); }
     .button-glow { box-shadow: 0 0 22px rgba(255,255,255,0.25), 0 0 46px rgba(255,255,255,0.08); }
 
-    /* Hero image + Ken Burns */
-    #heroImg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; animation: kenburns 26s ease-in-out infinite alternate; transform-origin:center; }
-    @keyframes kenburns { from { transform: scale(1.05); } to { transform: scale(1.16) translate(-1.5%, 1%); } }
+    /* Hero video + fade au noir sur la couture de boucle */
+    .hero-video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
+    .hero-fade { position:absolute; inset:0; z-index:3; background:#05070d; opacity:0; pointer-events:none; }
+
+    /* Fond en grille de points (anti-monotonie, cf. aceternity grid-and-dot) */
+    .bg-grid { background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.055) 1px, transparent 0); background-size:34px 34px; }
+    .bg-grid-lg { background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.05) 1px, transparent 0); background-size:48px 48px; }
+
+    /* Stats count-up */
+    .stat { font-variant-numeric:tabular-nums; }
+
+    /* Focus cards (aceternity) : la carte survolée reste nette, les autres s'estompent */
+    .focus-card { transition:filter .45s ease, opacity .45s ease, transform .45s ease; }
+    .focus-card.dim { filter:blur(2px); opacity:.45; transform:scale(.98); }
+
+    /* Marquee témoignages (aceternity infinite-moving-cards) */
+    .marquee { display:flex; overflow:hidden; -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent); mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent); }
+    .marquee-track { display:flex; gap:1rem; padding:0 .5rem; width:max-content; animation:marquee 46s linear infinite; }
+    .marquee:hover .marquee-track { animation-play-state:paused; }
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .tcard { width:340px; flex:0 0 340px; }
+
+    /* Spotlight au survol (aceternity card-spotlight) */
+    .spot { position:relative; }
+    .spot::before { content:''; position:absolute; inset:0; border-radius:inherit; opacity:0; transition:opacity .3s; pointer-events:none;
+      background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%), rgba(124,198,255,.14), transparent 60%); }
+    .spot:hover::before { opacity:1; }
+
+    /* Meteors (aceternity) */
+    .meteors { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+    .meteor { position:absolute; top:-10%; width:2px; height:2px; border-radius:9999px; background:#bcd8ff; box-shadow:0 0 0 1px rgba(160,200,255,.25);
+      animation:meteor linear infinite; }
+    .meteor::before { content:''; position:absolute; top:50%; right:0; width:60px; height:1px; transform:translateY(-50%);
+      background:linear-gradient(90deg, rgba(160,200,255,.65), transparent); }
+    @keyframes meteor { 0%{transform:translate(0,0) rotate(215deg); opacity:1;} 70%{opacity:1;} 100%{transform:translate(-320px,320px) rotate(215deg); opacity:0;} }
+
 
     /* ===== AURORA effect ===== */
     .aurora { position:absolute; left:0; right:0; top:0; height:62%; z-index:2; pointer-events:none; overflow:hidden; opacity:.9; }
@@ -164,7 +197,8 @@
 
   <!-- ============ HERO ============ -->
   <header id="hero" class="relative h-screen w-full overflow-hidden">
-    <img id="heroImg" src="assets/hero.jpg" alt="La station Vélocity et ses navettes au-dessus de la Terre" />
+    <video id="heroVideo" class="hero-video" poster="assets/hero-poster.jpg" muted autoplay playsinline preload="auto"></video>
+    <div id="heroFade" class="hero-fade"></div>
 
     <!-- aurora over the dark sky part -->
     <div class="aurora"></div>
@@ -201,22 +235,14 @@
     </div>
   </header>
 
-  <!-- ============ FINAL CTA / WAITLIST — HYPERSPACE ============ -->
-  <section id="waitlist" class="relative py-24 md:py-32 px-6 overflow-hidden">
-    <canvas id="hyperCanvas" class="absolute inset-0 w-full h-full -z-10"></canvas>
-    <div class="absolute inset-0 -z-10" style="background:radial-gradient(ellipse at 50% 45%, rgba(5,7,13,.35) 20%, rgba(5,7,13,.85) 70%, #05070d 100%);"></div>
-    <div class="reveal max-w-2xl mx-auto text-center">
-      <p class="uppercase tracking-[0.3em] text-[11px] text-white/60 mb-5 font-body font-semibold">Places limitées · Départs 2027</p>
-      <h2 class="font-display text-3xl md:text-5xl leading-tight font-semibold">Réservez votre place dans le ciel.</h2>
-      <p class="text-white/70 mt-6 text-lg md:text-xl font-body">
-        Les premiers séjours sont réservés aux membres de la liste d'attente. Laissez votre email : nous vous contactons dès l'ouverture des réservations.
-      </p>
-      <form id="waitlistForm" class="mt-10 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-        <input type="email" required placeholder="votre@email.com" class="flex-1 liquid-glass rounded-full px-6 py-4 text-base text-white placeholder-white/40 outline-none focus:border-white/30 font-body" />
-        <button type="submit" class="btn-white button-glow whitespace-nowrap">Rejoindre</button>
-      </form>
-      <p id="formMsg" class="text-sky-300 text-base mt-4 h-5 transition-opacity opacity-0 font-body">Merci ! Vous êtes sur la liste — à très bientôt en orbite. ✦</p>
-      <p class="text-white/35 text-sm mt-6 font-body">Démonstration académique — aucune donnée n'est réellement collectée ni transmise.</p>
+  <!-- ============ STATS (compteurs animés) ============ -->
+  <section id="stats" class="relative py-16 md:py-20 px-6 md:px-12 overflow-hidden bg-grid border-t border-b border-white/5">
+    <div class="absolute inset-0 -z-10" style="background:radial-gradient(ellipse at 50% 0%, rgba(56,189,248,.12), transparent 62%);"></div>
+    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10 text-center">
+      <div class="reveal"><div class="stat font-display text-4xl md:text-6xl font-bold" data-count="400" data-suffix=" km">0</div><p class="text-white/50 text-sm md:text-base font-body mt-2 uppercase tracking-wider">d'altitude</p></div>
+      <div class="reveal"><div class="stat font-display text-4xl md:text-6xl font-bold" data-count="27500" data-sep="1" data-suffix=" km/h">0</div><p class="text-white/50 text-sm md:text-base font-body mt-2 uppercase tracking-wider">vitesse orbitale</p></div>
+      <div class="reveal"><div class="stat font-display text-4xl md:text-6xl font-bold" data-count="16" data-suffix=" /jour">0</div><p class="text-white/50 text-sm md:text-base font-body mt-2 uppercase tracking-wider">levers de soleil</p></div>
+      <div class="reveal"><div class="stat font-display text-4xl md:text-6xl font-bold" data-count="92" data-suffix=" min">0</div><p class="text-white/50 text-sm md:text-base font-body mt-2 uppercase tracking-wider">par orbite</p></div>
     </div>
   </section>
 
@@ -466,6 +492,112 @@
     </div>
   </section>
 
+
+  <!-- ============ VU DE LEURS YEUX — vidéos marketing (focus cards, aceternity) ============ -->
+  <section id="eyes" class="relative py-20 md:py-28 px-6 md:px-12">
+    <div class="max-w-6xl mx-auto">
+      <div class="reveal text-center max-w-2xl mx-auto mb-12">
+        <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5 font-body font-semibold">Vu de leurs yeux</p>
+        <h2 class="font-display text-3xl md:text-4xl font-semibold">Ce que l'on ressent, là-haut</h2>
+        <p class="text-white/55 mt-4 text-base md:text-lg font-body">Survolez une scène — le reste s'efface.</p>
+      </div>
+      <div id="focusCards" class="grid md:grid-cols-3 gap-4">
+        <div class="focus-card reveal rounded-3xl overflow-hidden relative border border-white/10 min-h-[360px] md:min-h-[460px]">
+          <video class="absolute inset-0 w-full h-full object-cover" src="assets/mk-01.mp4" muted loop autoplay playsinline preload="auto"></video>
+          <div class="vfade absolute inset-0 bg-ink opacity-0 pointer-events-none"></div>
+          <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(5,7,13,.05) 40%,rgba(5,7,13,.88) 100%);"></div>
+          <div class="absolute bottom-0 p-6 md:p-7">
+            <p class="text-[11px] uppercase tracking-[0.25em] text-sky-300/80 font-body font-semibold mb-2">01</p>
+            <h3 class="font-display text-xl md:text-2xl font-semibold">Le premier regard</h3>
+            <p class="text-white/60 text-sm md:text-base font-body mt-1">Le moment où la Terre entière tient dans une fenêtre.</p>
+          </div>
+        </div>
+        <div class="focus-card reveal rounded-3xl overflow-hidden relative border border-white/10 min-h-[360px] md:min-h-[460px]">
+          <video class="absolute inset-0 w-full h-full object-cover" src="assets/mk-02.mp4" muted loop autoplay playsinline preload="auto"></video>
+          <div class="vfade absolute inset-0 bg-ink opacity-0 pointer-events-none"></div>
+          <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(5,7,13,.05) 40%,rgba(5,7,13,.88) 100%);"></div>
+          <div class="absolute bottom-0 p-6 md:p-7">
+            <p class="text-[11px] uppercase tracking-[0.25em] text-sky-300/80 font-body font-semibold mb-2">02</p>
+            <h3 class="font-display text-xl md:text-2xl font-semibold">Le silence orbital</h3>
+            <p class="text-white/60 text-sm md:text-base font-body mt-1">Plus un bruit. Seulement la planète qui défile.</p>
+          </div>
+        </div>
+        <div class="focus-card reveal rounded-3xl overflow-hidden relative border border-white/10 min-h-[360px] md:min-h-[460px]">
+          <video class="absolute inset-0 w-full h-full object-cover" src="assets/mk-03.mp4" muted loop autoplay playsinline preload="auto"></video>
+          <div class="vfade absolute inset-0 bg-ink opacity-0 pointer-events-none"></div>
+          <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(5,7,13,.05) 40%,rgba(5,7,13,.88) 100%);"></div>
+          <div class="absolute bottom-0 p-6 md:p-7">
+            <p class="text-[11px] uppercase tracking-[0.25em] text-sky-300/80 font-body font-semibold mb-2">03</p>
+            <h3 class="font-display text-xl md:text-2xl font-semibold">Seize aubes par jour</h3>
+            <p class="text-white/60 text-sm md:text-base font-body mt-1">Un lever de soleil toutes les 90 minutes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TÉMOIGNAGES — marquee (aceternity infinite-moving-cards) ============ -->
+  <section id="voices" class="relative py-20 md:py-28 overflow-hidden bg-grid-lg">
+    <div class="meteors" id="meteors"></div>
+    <div class="absolute inset-0 -z-0 pointer-events-none" style="background:radial-gradient(ellipse at 50% 20%, rgba(129,92,246,.12), transparent 60%);"></div>
+    <div class="reveal text-center max-w-2xl mx-auto mb-12 px-6 relative z-10">
+      <p class="uppercase tracking-[0.3em] text-[11px] text-white/45 mb-5 font-body font-semibold">Ils y étaient</p>
+      <h2 class="font-display text-3xl md:text-4xl font-semibold">Des retours qui ne redescendent pas</h2>
+    </div>
+    <div class="marquee relative z-10">
+      <div class="marquee-track">
+        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Je pensais avoir tout vu. Puis j'ai vu la Terre se lever — seize fois dans la journée. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Clara M. — première voyageuse</figcaption>
+        </figure>
+        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Aucune suite d'hôtel sur Terre ne rivalise avec une fenêtre sur la planète entière. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Léon V. — architecte</figcaption>
+        </figure>
+        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« On redescend transformé. Ce n'est pas un voyage, c'est un basculement. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Dr. A. Novak — médecin de bord</figcaption>
+        </figure>
+        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Le silence, là-haut, vaut chaque kilomètre parcouru pour l'atteindre. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Inès R. — exploratrice</figcaption>
+        </figure>
+        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Le spa en apesanteur : l'expérience la plus étrange et la plus douce de ma vie. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Marcus T. — invité</figcaption>
+        </figure>
+        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« J'avais réservé trois nuits. J'en aurais voulu trente. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Sofia L. — invitée</figcaption>
+        </figure>
+        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Je pensais avoir tout vu. Puis j'ai vu la Terre se lever — seize fois dans la journée. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Clara M. — première voyageuse</figcaption>
+        </figure>
+        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Aucune suite d'hôtel sur Terre ne rivalise avec une fenêtre sur la planète entière. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Léon V. — architecte</figcaption>
+        </figure>
+        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« On redescend transformé. Ce n'est pas un voyage, c'est un basculement. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Dr. A. Novak — médecin de bord</figcaption>
+        </figure>
+        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Le silence, là-haut, vaut chaque kilomètre parcouru pour l'atteindre. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Inès R. — exploratrice</figcaption>
+        </figure>
+        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« Le spa en apesanteur : l'expérience la plus étrange et la plus douce de ma vie. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Marcus T. — invité</figcaption>
+        </figure>
+        <figure class="tcard liquid-glass rounded-2xl p-6 flex flex-col justify-between">
+          <blockquote class="font-body text-white/80 text-base leading-relaxed">« J'avais réservé trois nuits. J'en aurais voulu trente. »</blockquote>
+          <figcaption class="mt-5 text-sm text-white/50 font-body">Sofia L. — invitée</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ FAQ ============ -->
   <section id="faq" class="relative py-16 md:py-24 px-6 md:px-12 max-w-3xl mx-auto">
     <h2 class="reveal font-display text-2xl md:text-4xl text-center mb-12 font-semibold">Questions fréquentes</h2>
@@ -486,6 +618,25 @@
         <button class="faq-q w-full flex items-center justify-between text-left px-6 py-5"><span class="text-white/90 text-lg font-body font-medium">Rejoindre la liste m'engage-t-il ?</span><i data-lucide="plus" class="w-5 h-5 text-white/50 shrink-0 transition-transform"></i></button>
         <div class="faq-a px-6 max-h-0 overflow-hidden transition-all duration-500 text-white/55 text-base font-body"><p class="pb-5">Aucun engagement. La liste d'attente vous donne un accès prioritaire aux premiers départs 2027 et à nos annonces. Vous restez libre à chaque étape.</p></div>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA / WAITLIST — HYPERSPACE ============ -->
+  <section id="waitlist" class="relative py-24 md:py-32 px-6 overflow-hidden">
+    <canvas id="hyperCanvas" class="absolute inset-0 w-full h-full -z-10"></canvas>
+    <div class="absolute inset-0 -z-10" style="background:radial-gradient(ellipse at 50% 45%, rgba(5,7,13,.35) 20%, rgba(5,7,13,.85) 70%, #05070d 100%);"></div>
+    <div class="reveal max-w-2xl mx-auto text-center">
+      <p class="uppercase tracking-[0.3em] text-[11px] text-white/60 mb-5 font-body font-semibold">Places limitées · Départs 2027</p>
+      <h2 class="font-display text-3xl md:text-5xl leading-tight font-semibold">Réservez votre place dans le ciel.</h2>
+      <p class="text-white/70 mt-6 text-lg md:text-xl font-body">
+        Les premiers séjours sont réservés aux membres de la liste d'attente. Laissez votre email : nous vous contactons dès l'ouverture des réservations.
+      </p>
+      <form id="waitlistForm" class="mt-10 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+        <input type="email" required placeholder="votre@email.com" class="flex-1 liquid-glass rounded-full px-6 py-4 text-base text-white placeholder-white/40 outline-none focus:border-white/30 font-body" />
+        <button type="submit" class="btn-white button-glow whitespace-nowrap">Rejoindre</button>
+      </form>
+      <p id="formMsg" class="text-sky-300 text-base mt-4 h-5 transition-opacity opacity-0 font-body">Merci ! Vous êtes sur la liste — à très bientôt en orbite. ✦</p>
+      <p class="text-white/35 text-sm mt-6 font-body">Démonstration académique — aucune donnée n'est réellement collectée ni transmise.</p>
     </div>
   </section>
 
@@ -584,6 +735,76 @@
     window.addEventListener('load',onScroll);
     onScroll();
     setTimeout(()=>revealEls.forEach(el=>el.classList.add('in')),3500);
+
+    // ===== HERO : 3 vidéos en séquence + fondu au noir sur la couture (loop global) =====
+    (function(){
+      const v=document.getElementById('heroVideo'), fade=document.getElementById('heroFade');
+      if(!v||!fade) return;
+      const srcs=['assets/hero-01.mp4','assets/hero-02.mp4','assets/hero-03.mp4'];
+      const FADE=0.6; let idx=0;
+      const pre=document.createElement('video'); pre.muted=true; pre.preload='auto';
+      function preloadNext(){ pre.src=srcs[(idx+1)%srcs.length]; }
+      function setSrc(i){ v.src=srcs[i]; const pr=v.play(); if(pr&&pr.catch) pr.catch(()=>{}); preloadNext(); }
+      v.addEventListener('ended',()=>{ idx=(idx+1)%srcs.length; setSrc(idx); });
+      function tick(){ const d=v.duration,t=v.currentTime; let o=0;
+        if(d&&isFinite(d)){ if(t<FADE)o=1-t/FADE; else if(t>d-FADE)o=(t-(d-FADE))/FADE; }
+        fade.style.opacity=Math.max(0,Math.min(1,o)); requestAnimationFrame(tick); }
+      setSrc(0); requestAnimationFrame(tick);
+    })();
+
+    // ===== Vidéos marketing : fondu de boucle + lecture uniquement quand visibles =====
+    (function(){
+      const vids=[...document.querySelectorAll('#eyes video')];
+      vids.forEach(v=>{
+        const fade=v.parentElement.querySelector('.vfade');
+        const FADE=0.5;
+        function tick(){ if(fade){ const d=v.duration,t=v.currentTime; let o=0;
+          if(d&&isFinite(d)){ if(t<FADE)o=1-t/FADE; else if(t>d-FADE)o=(t-(d-FADE))/FADE; }
+          fade.style.opacity=Math.max(0,Math.min(1,o)); } requestAnimationFrame(tick); }
+        requestAnimationFrame(tick);
+      });
+      if('IntersectionObserver' in window){
+        const io=new IntersectionObserver(es=>es.forEach(e=>{
+          const v=e.target; if(e.isIntersecting){ const pr=v.play(); if(pr&&pr.catch) pr.catch(()=>{}); } else v.pause();
+        }),{threshold:0.25});
+        vids.forEach(v=>io.observe(v));
+      }
+    })();
+
+    // ===== Focus cards (aceternity) =====
+    (function(){
+      const cards=[...document.querySelectorAll('#focusCards .focus-card')];
+      cards.forEach(c=>{
+        c.addEventListener('mouseenter',()=>cards.forEach(o=>{ if(o!==c) o.classList.add('dim'); }));
+        c.addEventListener('mouseleave',()=>cards.forEach(o=>o.classList.remove('dim')));
+      });
+    })();
+
+    // ===== Compteurs animés (stats) =====
+    (function(){
+      const els=[...document.querySelectorAll('.stat[data-count]')]; const done=new Set();
+      function fmt(n,sep){ n=Math.round(n); return sep? n.toLocaleString('fr-FR').replace(/[^0-9]/g,' ').trim() : String(n); }
+      function run(el){ const target=+el.dataset.count, sep=el.dataset.sep, suf=el.dataset.suffix||''; const dur=1400, t0=performance.now();
+        function step(now){ const p=Math.min(1,(now-t0)/dur); const e=1-Math.pow(1-p,3); el.textContent=fmt(target*e,sep)+suf; if(p<1) requestAnimationFrame(step); }
+        requestAnimationFrame(step); }
+      function check(){ const vh=window.innerHeight; els.forEach(el=>{ if(!done.has(el) && el.getBoundingClientRect().top < vh*0.85){ done.add(el); run(el);} }); }
+      window.addEventListener('scroll',check,{passive:true}); window.addEventListener('load',check); check();
+    })();
+
+    // ===== Spotlight au survol (cartes bento) =====
+    document.querySelectorAll('#board .liquid-glass').forEach(c=>{
+      c.classList.add('spot');
+      c.addEventListener('mousemove',e=>{ const r=c.getBoundingClientRect(); c.style.setProperty('--mx',(e.clientX-r.left)+'px'); c.style.setProperty('--my',(e.clientY-r.top)+'px'); });
+    });
+
+    // ===== Meteors (section témoignages) =====
+    (function(){
+      const box=document.getElementById('meteors'); if(!box) return;
+      for(let i=0;i<14;i++){ const m=document.createElement('span'); m.className='meteor';
+        m.style.left=Math.random()*100+'%'; m.style.top=(Math.random()*40-10)+'%';
+        m.style.animationDelay=(Math.random()*8)+'s'; m.style.animationDuration=(3+Math.random()*5)+'s';
+        box.appendChild(m); }
+    })();
 
     // FAQ accordion
     document.querySelectorAll('.faq-q').forEach(btn=>{
